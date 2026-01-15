@@ -1,0 +1,25 @@
+body{
+    background-color: rgb(242, 239, 235);
+    width: 100%;
+}
+
+main{
+    display: flex;
+}
+
+.founders{
+    display: flex;
+}
+
+.founder{
+    max-width: 200px;
+    justify-content: center;
+
+}
+
+.founder img{
+    border-radius:5px;
+    width: 90%;
+    flex-shrink: unset ;
+
+}

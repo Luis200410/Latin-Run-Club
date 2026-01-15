@@ -1,16 +1,22 @@
 import { createRoot } from 'react-dom/client'
-import Header from './src/assets/components/Header'
-import Founders from './src/assets/components/Founders'
+import Header from './src/components/Header'
+import Founders from './src/components/Founders'
+import founders from './src/info/founders.js'
+
+const founder = founders.map((founder, index) =>  {
+    return <Founders 
+                key={index}
+                {...founder}
+            />
+        }
+)
 
 const root = createRoot(document.getElementById('root'))
-
-// function Main(){
-
-// }
 
 root.render(
     <>
         <Header />
-        <Founders />
+        <div className='founders'> {founder}</div>
+       
     </>
 )
