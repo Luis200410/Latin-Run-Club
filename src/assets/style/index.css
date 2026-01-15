@@ -1,0 +1,8 @@
+body{
+    background-color: rgb(242, 239, 235);
+    width: 100%;
+}
+
+header{
+    display: flex;
+}
