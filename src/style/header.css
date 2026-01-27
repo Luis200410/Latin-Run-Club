@@ -1,0 +1,43 @@
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    margin: 1em auto;
+    font-weight: 500;
+
+}
+
+.list{
+    display: flex;
+}
+
+.logo{
+    max-width: 200px;
+}
+
+.list li{
+    list-style-type: none;
+    margin: 0 1em;
+}
+
+.list a{
+    text-decoration: none;
+}
+
+.list a:visited{
+    color: black;
+}
+
+.list a:hover{
+    font-weight: bold;
+}
+
+
+.log{
+    background-color: black;
+    border: none;
+    color: rgb(242, 239, 235);
+    padding: 1em 4em;
+    font-weight: bold;
+}
