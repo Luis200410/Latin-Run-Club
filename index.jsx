@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './src/layouts/Layout';
 import Home from './src/pages/Home';
 import About from './src/pages/About';
-import Events from './src/pages/Events';
 import Gallery from './src/pages/Gallery';
 import Join from './src/pages/Join';
 import SignIn from './src/pages/SignIn';
@@ -19,7 +18,6 @@ root.render(
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="about" element={<About />} />
-                <Route path="events" element={<Events />} />
                 <Route path="gallery" element={<Gallery />} />
                 <Route path="join" element={<Join />} />
                 <Route path="signin" element={<SignIn />} />
