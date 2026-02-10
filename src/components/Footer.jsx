@@ -2,63 +2,53 @@ export default function Footer(){
     return (
         <footer>
             <div className="section-1">
-                <div className="column-1">
-                    <h1><strong>Latin</strong><span> Run Club</span></h1>
-                    <p>Redefining urban movement through heritage, endurance, and the collective spirit of the modern athlete.</p>
-                </div>
-                <div className="links">
-                    <div>
-                        <h4>Club</h4>
-                        <ul>
-                            <a href="#"><li>About</li></a>
-                            <a href="#"><li>Gallery</li></a>
-                            <a href="#"><li>Story</li></a>
-                        </ul>
+                <div className="s1c1">
+                    <div className="c1-top">
+                        <h1>START</h1>
+                        <h1 className="red">RUNNING.</h1>
+                        <p>Follow us on Social Media And join Our WhatsApp Group for real-time updates, Drop Your Email below to get Run Announcements.</p>
                     </div>
-                    <div>
-                        <h4>Community</h4>
-                        <ul>
-                            <a href="#"><li>Events</li></a>
-                            <a href="#"><li>Messaging</li></a>
-                            <a href="#"><li>Members</li></a>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4>Support</h4>
-                        <ul>
-                            <a href="#"><li>Donate</li></a>
-                            <a href="#"><li>Shops</li></a>
-                            <a href="#"><li>Contact</li></a>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4>Stay Connected</h4>
-                        <form className="form">
-                            <input type="email"></input>
-                            <button>Suscribe</button>
+                    <div className="s1c2">
+                        <form className="email">
+                            <input id="email" type="email" placeholder="Email Address" required />
+                            <button type="submit">SUBSCRIBE</button>
                         </form>
+                    </div>
+                </div>
+                <div className="s2c2">
+                    <div className="colors">
+                        <div className="city-1"></div>
+                        <div className="city-2"></div>
+                        <div className="city-3"></div>
+                        <div className="city-4"></div>
+                        <div className="city-5"></div>
+                    </div>
+                    <div className="social-container">
+                        <ul className="social">
+                            <li><a><i class="fa-brands fa-whatsapp"></i></a></li>
+                            <li><a><i class="fa-brands fa-instagram"></i></a></li>
+                            <li><a><i class="fa-brands fa-strava"></i></a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p>LATIN RUN CLUB</p>
+                        <small>BASED IN THE CITY, COMMUNITY DRIVEN. OPEN TO ALL.</small>                            <small>&copy; 2026 LATIN RUN CLUB. PACE IN JUST A NUMBER.</small>
                     </div>
                 </div>
             </div>
             <div className="section-2">
-                <p>&copy; 2026 Latin Run Club</p>
-                <ul>
-                    <a href="#"><li>Privacy</li></a>
-                    <a href="#"><li>Terms</li></a>
-                    <a href="#"><li>Cookies</li></a>
-                </ul>
-                <div className="colors">
-                    <div className="colors"></div>
-                    <div className="colors"></div>
-                    <div className="colors"></div>
-                    <div className="colors"></div>
-                    <div className="colors"></div>
+                <div>
+                    <ul className="inside-links">
+                        <li><a>ABOUT US</a></li>
+                        <li><a>EVENTS</a></li>
+                        <li><a>DONATE</a></li>
+                        <li><a>TERMS</a></li>
+                    </ul>
                 </div>
-                <ul className="logo-links">
-                    <a href="#"><i></i></a>
-                    <a href="#"><i></i></a>
-                    <a href="#"><i></i></a>
-                </ul>
+                <div>
+                    <p>ENGLISH</p>
+                    <p><i></i></p>
+                </div>
             </div>
         </footer>
     )
