@@ -43,7 +43,6 @@ export default function Footer() {
                 <div>
                     <ul className="inside-links">
                         <li><Link to="/about">ABOUT US</Link></li>
-                        <li><Link to="/events">EVENTS</Link></li>
                         <li><Link to="/donate">DONATE</Link></li>
                         <li><Link to="/terms">TERMS</Link></li>
                     </ul>

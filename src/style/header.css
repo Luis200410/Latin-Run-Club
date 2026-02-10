@@ -46,6 +46,8 @@ header {
     padding: 1em 4em;
     font-weight: bold;
     cursor: pointer;
+    width: 7em;
+    border-radius: 5px;
 }
 
 .burger-menu {
@@ -119,15 +121,23 @@ header {
         display: flex !important;
         flex-direction: row;
         align-items: center;
-    
     }
+
+    .log{
+        font-size: 1em;
+        padding: 1em;
+    }
+
+    .logo {
+    max-width: 150px;
+    height: auto;
+}
 }
 
 @media (min-width: 1024px) {
     .nav-container {
         display: flex ;
-        flex-direction: row;
         align-items: center;
-    
+        justify-content: space-around;
     }
 }

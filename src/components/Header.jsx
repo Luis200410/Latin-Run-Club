@@ -19,12 +19,12 @@ export default function Header() {
             <div className={`nav-container ${isOpen ? 'open' : ''}`}>
                 <ul className="list">
                     <li><Link to="/about">About</Link></li>
-                    <li><Link to="/events">Events</Link></li>
                     <li><Link to="/gallery">Gallery</Link></li>
                     <li><Link to="/join">Join</Link></li>
                 </ul>
-                <Link to="/signin"><button className="log"><i></i>Sign In</button></Link>
+                
             </div>
+            <Link to="/signin"><button className="log"><i></i>Sign In</button></Link>
         </header>
     )
 }
