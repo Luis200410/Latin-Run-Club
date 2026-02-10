@@ -1,11 +1,11 @@
 header{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
-    width: 100%;
-    margin: 1em auto;
+    width: 100vw;
+    margin: 0 auto;
+    padding: 1em 3em;
     font-weight: 500;
-
 }
 
 .list{
@@ -40,4 +40,16 @@ header{
     color: rgb(242, 239, 235);
     padding: 1em 4em;
     font-weight: bold;
+}
+
+@media (max-width: 599px){
+
+}
+
+@media (min-width: 600px){
+
+}
+
+@media (min-width: 1024px){
+
 }

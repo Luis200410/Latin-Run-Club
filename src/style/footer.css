@@ -132,7 +132,7 @@ footer {
 
 /* media queries */
 
-@media (max-width: 767px){
+@media (max-width: 599px){
 
     /* sections */
 
@@ -176,7 +176,7 @@ footer {
 
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
         /* sections */
 
     footer{

@@ -6,14 +6,14 @@ export default function Header(){
             </div>
             <div>
                 <ul className="list">
-                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">About</a></li>
                     <li><a href="#">Events</a></li>
                     <li><a href="#">Gallery</a></li>
-                    <li><a href="#"></a></li>
+                    <li><a href="#">Join</a></li>
                 </ul>
             </div>
             <div>
-            <button className="log"><i></i>Join Us</button>
+            <button className="log"><i></i>Sing In</button>
             </div>
 
         </header>
