@@ -25,14 +25,15 @@ export default function Footer(){
                     </div>
                     <div className="social-container">
                         <ul className="social">
-                            <li><a><i class="fa-brands fa-whatsapp"></i></a></li>
-                            <li><a><i class="fa-brands fa-instagram"></i></a></li>
-                            <li><a><i class="fa-brands fa-strava"></i></a></li>
+                            <li><a><i className="fa-brands fa-whatsapp"></i></a></li>
+                            <li><a><i className="fa-brands fa-instagram"></i></a></li>
+                            <li><a><i className="fa-brands fa-strava"></i></a></li>
                         </ul>
                     </div>
-                    <div>
+                    <div className="bottom">
                         <p>LATIN RUN CLUB</p>
-                        <small>BASED IN THE CITY, COMMUNITY DRIVEN. OPEN TO ALL.</small>                            <small>&copy; 2026 LATIN RUN CLUB. PACE IN JUST A NUMBER.</small>
+                        <small>BASED IN THE CITY, COMMUNITY DRIVEN. OPEN TO ALL. </small>                       
+                        <small>&copy; 2026 LATIN RUN CLUB. PACE IN JUST A NUMBER.</small>
                     </div>
                 </div>
             </div>
@@ -45,11 +46,12 @@ export default function Footer(){
                         <li><a>TERMS</a></li>
                     </ul>
                 </div>
-                <div>
+                <div className="translate">
                     <p>ENGLISH</p>
-                    <p><i></i></p>
+                    <p><i className="fa-solid fa-globe"></i></p>
                 </div>
             </div>
         </footer>
+        
     )
 }
