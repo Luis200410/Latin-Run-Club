@@ -1,21 +1,30 @@
-export default function Header(){
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+export default function Header() {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <header>
-            <div>
-                <a href="../index.html"><img src="/src/images/logo.png" alt="Latin Run Club Logo" className="logo" /></a>
+            <div className="logo-container">
+                <Link to="/"><img src="/src/images/logo.png" alt="Latin Run Club Logo" className="logo" /></Link>
+                <button className="burger-menu" onClick={toggleMenu}>
+                    ☰
+                </button>
             </div>
-            <div>
+            <div className={`nav-container ${isOpen ? 'open' : ''}`}>
                 <ul className="list">
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Events</a></li>
-                    <li><a href="#">Gallery</a></li>
-                    <li><a href="#">Join</a></li>
+                    <li><Link to="/about">About</Link></li>
+                    <li><Link to="/events">Events</Link></li>
+                    <li><Link to="/gallery">Gallery</Link></li>
+                    <li><Link to="/join">Join</Link></li>
                 </ul>
+                <Link to="/signin"><button className="log"><i></i>Sign In</button></Link>
             </div>
-            <div>
-            <button className="log"><i></i>Sing In</button>
-            </div>
-
         </header>
     )
 }

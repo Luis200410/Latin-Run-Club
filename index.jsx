@@ -1,25 +1,29 @@
-import { createRoot } from 'react-dom/client'
-import Header from './src/components/Header'
-import Founders from './src/components/Founders'
-import founders from './src/info/founders.js'
-import Footer from './src/components/Footer'
-import './src/style/Header.css'
-import './src/style/footer.css'
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './src/layouts/Layout';
+import Home from './src/pages/Home';
+import About from './src/pages/About';
+import Events from './src/pages/Events';
+import Gallery from './src/pages/Gallery';
+import Join from './src/pages/Join';
+import SignIn from './src/pages/SignIn';
+import './src/style/Header.css';
+import './src/style/footer.css';
+import './src/style/index.css';
 
-const founder = founders.map((founder, index) =>  {
-    return <Founders 
-                key={index}
-                {...founder}
-            />
-        }
-)
-
-const root = createRoot(document.getElementById('root'))
+const root = createRoot(document.getElementById('root'));
 
 root.render(
-    <>
-        <Header />
-        <div className='founders'> {founder}</div>
-        <Footer />
-    </>
-)
+    <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="about" element={<About />} />
+                <Route path="events" element={<Events />} />
+                <Route path="gallery" element={<Gallery />} />
+                <Route path="join" element={<Join />} />
+                <Route path="signin" element={<SignIn />} />
+            </Route>
+        </Routes>
+    </BrowserRouter>
+);

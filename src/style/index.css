@@ -1,7 +1,6 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
-body{
+body {
     font-family: "Jost", sans-serif;
     background-color: rgb(242, 239, 235);
     color: black;
@@ -10,23 +9,44 @@ body{
     margin: 0;
 }
 
-main{
+main {
     display: flex;
 }
 
-.founders{
+.founders {
     display: flex;
 }
 
-.founder{
+.founder {
     max-width: 200px;
     justify-content: center;
 
 }
 
-.founder img{
-    border-radius:5px;
+.founder img {
+    border-radius: 5px;
     width: 90%;
-    flex-shrink: unset ;
+    flex-shrink: unset;
 
+}
+
+/* Sticky Footer Layout */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    min-height: 100vh;
+    height: auto;
+    overflow-x: hidden;
+    /* prevent horizontal scroll from 100vw */
 }

@@ -1,4 +1,6 @@
-export default function Footer(){
+import { Link } from 'react-router-dom';
+
+export default function Footer() {
     return (
         <footer>
             <div className="section-1">
@@ -32,7 +34,7 @@ export default function Footer(){
                     </div>
                     <div className="bottom">
                         <p>LATIN RUN CLUB</p>
-                        <small>BASED IN THE CITY, COMMUNITY DRIVEN. OPEN TO ALL. </small>                       
+                        <small>BASED IN THE CITY, COMMUNITY DRIVEN. OPEN TO ALL. </small>
                         <small>&copy; 2026 LATIN RUN CLUB. PACE IN JUST A NUMBER.</small>
                     </div>
                 </div>
@@ -40,10 +42,10 @@ export default function Footer(){
             <div className="section-2">
                 <div>
                     <ul className="inside-links">
-                        <li><a>ABOUT US</a></li>
-                        <li><a>EVENTS</a></li>
-                        <li><a>DONATE</a></li>
-                        <li><a>TERMS</a></li>
+                        <li><Link to="/about">ABOUT US</Link></li>
+                        <li><Link to="/events">EVENTS</Link></li>
+                        <li><Link to="/donate">DONATE</Link></li>
+                        <li><Link to="/terms">TERMS</Link></li>
                     </ul>
                 </div>
                 <div className="translate">
@@ -52,6 +54,6 @@ export default function Footer(){
                 </div>
             </div>
         </footer>
-        
+
     )
 }
