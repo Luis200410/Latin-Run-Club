@@ -1,3 +1,4 @@
+// Components
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './src/layouts/Layout';
@@ -6,6 +7,8 @@ import About from './src/pages/About';
 import Gallery from './src/pages/Gallery';
 import Join from './src/pages/Join';
 import SignIn from './src/pages/SignIn';
+
+// styles
 import './src/style/Header.css';
 import './src/style/footer.css';
 import './src/style/index.css';

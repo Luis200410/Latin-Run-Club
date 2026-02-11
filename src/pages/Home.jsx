@@ -1,18 +1,17 @@
-import Founders from '../components/Founders';
-import founders from '../info/founders.js';
+import MainIndex from '../components/MainIndex'
+import Excuse from '../components/Excuse'
+import EventsContainer from '../components/EventsContainer'
 
-export default function Home() {
-    const founderList = founders.map((founder, index) => {
-        return <Founders
-            key={index}
-            {...founder}
-        />
-    }
-    )
+import '../style/main-index.css'
+import '../style/excuse.css'
+import '../style/events-preview.css'
 
+export default function Home(){
     return (
-        <div className='founders'>
-            {founderList}
-        </div>
-    );
+        <>
+            <MainIndex />
+            <Excuse />
+            <EventsContainer />
+        </>
+    )
 }

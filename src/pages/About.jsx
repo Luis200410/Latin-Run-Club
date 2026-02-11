@@ -1,8 +1,20 @@
+import Founders from "../components/Founders";
+import founders from '../info/founders.js';
+
+
 export default function About() {
+    const founderList = founders.map((founder, index) => {
+        return <Founders
+            key={index}
+            {...founder}
+        />
+    }
+    )
     return (
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <h1>About Us</h1>
-            <p>Welcome to the Latin Run Club! This is the About page.</p>
-        </div>
+        <>
+            <div className='founders'>
+                {founderList}
+            </div>
+        </>
     );
 }
