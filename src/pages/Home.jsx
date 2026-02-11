@@ -1,6 +1,7 @@
 import MainIndex from '../components/MainIndex'
 import Excuse from '../components/Excuse'
 import EventsContainer from '../components/EventsContainer'
+import BrandContainer from '../components/BrandContainer'
 
 import '../style/main-index.css'
 import '../style/excuse.css'
@@ -12,6 +13,7 @@ export default function Home(){
             <MainIndex />
             <Excuse />
             <EventsContainer />
+            <BrandContainer />
         </>
     )
 }
