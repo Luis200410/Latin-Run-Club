@@ -1,5 +1,127 @@
-.events{
+.events {
     width: 100%;
     background-color: black;
     color: white;
+    padding-bottom: 10em;
+    padding-top: 6em;
+}
+
+.events>h1 {
+    font-size: 10em;
+    margin: 0 0 0 0.5em;
+    padding: 0;
+}
+
+.blue {
+    color: rgb(0, 151, 178);
+}
+
+.events>p {
+    font-size: 1em;
+    margin: -3em 0 4em 10em;
+    padding: 0;
+    color: rgb(253, 132, 74);
+}
+
+.eventCard {
+    background-color: rgb(242, 239, 235);
+    color: black;
+    text-transform: uppercase;
+    margin: 0.5em auto;
+    padding: 4em;
+    width: 80%;
+}
+
+.eventDate,
+.eventData {
+    color: gray;
+    font-size: large;
+    font-weight: 600;
+}
+
+.eventName {
+    font-size: 3.5em;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.eventData {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 0;
+    border-bottom: 1px solid lightgray;
+}
+
+
+.eventLocation:visited {
+    color: rgb(128, 120, 120);
+}
+
+.eventJoin {
+    margin: 2em 0 0 0;
+    color: black;
+    padding: 1.2em;
+    font-size: large;
+    font-weight: bolder;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.eventJoin:hover {
+    background-color: rgb(213, 45, 93);
+}
+
+@media (max-width: 599px) {
+    .events>h1 {
+        font-size: 4em;
+        margin-left: 0.2em;
+    }
+
+    .events>p {
+        margin: -1em 0 2em 1em;
+    }
+
+    .eventCard {
+        width: 100%;
+        padding: 2em;
+        margin: 1em 0;
+        box-sizing: border-box;
+    }
+
+    .eventName {
+        font-size: 2em;
+        margin-bottom: 0.5em;
+    }
+
+    .eventData {
+        flex-direction: column;
+        align-items: flex-start;
+        border-bottom: none;
+    }
+
+    .eventData p {
+        margin: 0.5em 0;
+        border-bottom: 1px solid lightgray;
+        width: 100%;
+        padding-bottom: 0.5em;
+    }
+
+    .eventJoin {
+        margin-top: 1em;
+        width: 100%;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+    .events>h1 {
+        font-size: 6em;
+    }
+
+    .eventCard {
+        padding: 3em;
+        width: 90%;
+    }
 }

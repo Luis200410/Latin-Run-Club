@@ -6,6 +6,7 @@ import BrandContainer from '../components/BrandContainer'
 import '../style/main-index.css'
 import '../style/excuse.css'
 import '../style/events-preview.css'
+import '../style/brands.css'
 
 export default function Home(){
     return (

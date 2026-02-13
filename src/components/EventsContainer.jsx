@@ -13,7 +13,8 @@ const eventsPrev = events.map((event, index) => {
 export default function EventsContainer(){
     return (
         <section className="events">
-            <h1>SCHEDULE<span>.</span></h1>
+            <h1>SCHEDULE<span className='blue'>.</span></h1>
+            <p>CITY ADVENTURES / 2026</p>
             <div>
                 {eventsPrev}
             </div>
