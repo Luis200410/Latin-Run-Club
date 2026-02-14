@@ -1,14 +1,12 @@
-import MainIndex from '../components/MainIndex'
-import Excuse from '../components/Excuse'
-import EventsContainer from '../components/EventsContainer'
-import BrandContainer from '../components/BrandContainer'
+import MainIndex from "../components/MainIndex";
+import Excuse from "../components/Excuse";
+import EventsContainer from "../components/EventsContainer";
+import BrandContainer from "../components/BrandContainer";
+import '../style/main-index.css';
+import '../style/excuse.css';
+import '../style/brands.css';
 
-import '../style/main-index.css'
-import '../style/excuse.css'
-import '../style/events-preview.css'
-import '../style/brands.css'
-
-export default function Home(){
+export default function Home() {
     return (
         <>
             <MainIndex />

@@ -7,24 +7,32 @@ import About from './src/pages/About';
 import Gallery from './src/pages/Gallery';
 import Join from './src/pages/Join';
 import SignIn from './src/pages/SignIn';
+import SignUp from './src/pages/SignUp';
+import CityNewYork from './src/pages/CityNewYork';
 
 // styles
 import './src/style/Header.css';
 import './src/style/footer.css';
 import './src/style/index.css';
 
+import { AuthProvider } from './src/context/AuthContext';
+
 const root = createRoot(document.getElementById('root'));
 
 root.render(
     <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="about" element={<About />} />
-                <Route path="gallery" element={<Gallery />} />
-                <Route path="join" element={<Join />} />
-                <Route path="signin" element={<SignIn />} />
-            </Route>
-        </Routes>
+        <AuthProvider>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="about" element={<About />} />
+                    <Route path="gallery" element={<Gallery />} />
+                    <Route path="join" element={<Join />} />
+                    <Route path="signin" element={<SignIn />} />
+                    <Route path="signup" element={<SignUp />} />
+                    <Route path="cities/new-york" element={<CityNewYork />} />
+                </Route>
+            </Routes>
+        </AuthProvider>
     </BrowserRouter>
 );

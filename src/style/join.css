@@ -1,0 +1,103 @@
+/* Join Page Styles */
+.join-container {
+    padding-top: 100px;
+    padding-bottom: 4rem;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+}
+
+.join-hero {
+    text-align: center;
+    padding: 3rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.join-hero h1 {
+    font-size: 3.5rem;
+    text-transform: uppercase;
+    color: var(--primary-color, #f46a25);
+    margin-bottom: 1.5rem;
+}
+
+.join-hero p {
+    font-size: 1.25rem;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.join-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+}
+
+.join-card {
+    background: #1a1a1a;
+    padding: 3rem 2rem;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.join-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-color, #f46a25);
+    box-shadow: 0 10px 30px rgba(244, 106, 37, 0.2);
+}
+
+.join-card h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.join-card p {
+    color: #999;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+}
+
+.join-btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    border: 2px solid var(--primary-color, #f46a25);
+    color: var(--primary-color, #f46a25);
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.join-btn:hover {
+    background-color: var(--primary-color, #f46a25);
+    color: white;
+}
+
+.join-card.highlight {
+    background-color: #222;
+    border-color: var(--primary-color, #f46a25);
+}
+
+.join-card.highlight .join-btn {
+    background-color: var(--primary-color, #f46a25);
+    color: white;
+}
+
+.join-card.highlight .join-btn:hover {
+    background-color: transparent;
+    color: var(--primary-color, #f46a25);
+}
