@@ -1,116 +1,609 @@
-/* About Page Styles */
-.about-container {
+/* About Page - Evolution Design */
+
+/* Variables */
+:root {
+    --brand-bg: rgb(242, 239, 235);
+    --brand-teal: #0D9488;
+    --brand-orange: #F26522;
+    --brand-purple: #7C3AED;
+    --brand-olive: #65A30D;
+    --brand-pink: #DB2777;
+    --black: #000000;
+}
+
+.about-page {
+    background-color: var(--brand-bg);
+    color: var(--black);
+    font-family: 'Inter', sans-serif;
     padding-top: 80px;
-    /* Space for fixed header */
-    color: var(--text-color);
-    background-color: var(--background-color);
-    font-family: 'Space Grotesk', sans-serif;
+    /* Header offset */
+    overflow-x: hidden;
 }
 
-.about-hero {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1552674605-5dae9f9f798e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-    background-size: cover;
-    background-position: center;
-    color: white;
+/* Utilities */
+.max-w-7xl {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }
 
-.about-hero h1 {
-    font-size: 3.5rem;
-    margin-bottom: 1rem;
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* New Typographic Hero "OUR STORY & HISTORY" */
+.about-hero-section {
+    padding: 6rem 1.5rem;
+    background-color: var(--brand-bg);
+}
+
+.hero-title-container {
+    max-width: 80rem;
+    margin: 0 auto;
+    margin-bottom: 4rem;
+}
+
+.hero-title-big {
+    font-size: 10vw;
+    /* Responsive Scaling */
+    font-weight: 900;
+    line-height: 0.85;
     text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.about-mission {
-    max-width: 800px;
-    margin: 4rem auto;
-    text-align: center;
-    padding: 0 2rem;
-}
-
-.about-mission h2 {
-    font-size: 2.5rem;
+    letter-spacing: -0.04em;
+    color: black;
     margin-bottom: 2rem;
-    color: var(--primary-color, #f46a25);
 }
 
-.about-mission p {
-    font-size: 1.25rem;
-    line-height: 1.6;
-    color: #ccc;
+@media (min-width: 1200px) {
+    .hero-title-big {
+        font-size: 9rem;
+    }
 }
 
-.values-section {
-    padding: 4rem 2rem;
-    background-color: #1a1a1a;
-}
-
-.values-grid {
+.hero-intro-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    max-width: 80rem;
+    margin: 0 auto;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .hero-intro-grid {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+.hero-intro-text {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    font-weight: 500;
+    max-width: 35rem;
+}
+
+.hero-established {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.est-bar {
+    width: 4px;
+    height: 4rem;
+    background-color: #EF4444;
+    /* Red line from image */
+}
+
+.est-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.est-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #888;
+    margin-bottom: 0.25rem;
+}
+
+.est-year {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+
+/* Evolution Timeline Section */
+.evolution-section {
+    padding: 6rem 0;
+    position: relative;
+}
+
+.evolution-header {
+    text-align: center;
+    margin-bottom: 5rem;
+    position: relative;
+}
+
+.evolution-label {
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--brand-orange);
+    margin-bottom: 0.5rem;
+}
+
+.timeline-container {
+    position: relative;
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    /* Reduced padding */
+}
+
+/* Vertical Center Line */
+.timeline-line {
+    position: absolute;
+    left: 1.5rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: var(--brand-orange);
+}
+
+@media (min-width: 768px) {
+    .timeline-line {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    margin-bottom: 5rem;
+    /* Reduced from 8rem */
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    .timeline-item {
+        grid-template-columns: 1fr 1fr;
+        gap: 6rem;
+        align-items: center;
+    }
+}
+
+.timeline-content {
+    order: 2;
+    /* Text usually second on mobile */
+    text-align: left;
+}
+
+.timeline-visual {
+    order: 1;
+    position: relative;
+}
+
+@media (min-width: 768px) {
+
+    /* Alternating Layout */
+    .timeline-item:nth-child(odd) .timeline-content {
+        order: 1;
+        text-align: right;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-visual {
+        order: 2;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+        order: 2;
+        text-align: left;
+    }
+
+    .timeline-item:nth-child(even) .timeline-visual {
+        order: 1;
+    }
+}
+
+.year-title {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #DB2777;
+    /* Pink/Red from image */
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.05em;
+}
+
+.year-subtitle {
+    font-size: 0.875rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.year-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+.timeline-img {
+    width: 100%;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    filter: grayscale(100%);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Huge Background Text "BACK" if needed, keeping it subtle */
+.bg-text-layer {
+    position: absolute;
+    top: 20%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 25vw;
+    font-weight: 900;
+    color: rgba(0, 0, 0, 0.03);
+    pointer-events: none;
+    z-index: 0;
+    line-height: 0.8;
+}
+
+/* Removed separate Bottom Banner since it's merged */
+
+.banner-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6) grayscale(30%);
+    z-index: -1;
+}
+
+.banner-content {
+    max-width: 60rem;
+    padding: 0 1.5rem;
+    z-index: 10;
+}
+
+.banner-text {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 768px) {
+    .banner-text {
+        font-size: 5rem;
+    }
+}
+
+.banner-bar {
+    width: 5rem;
+    height: 6px;
+    background-color: #FFC107;
+    /* Yellow/Gold from image */
     margin: 0 auto;
 }
 
-.value-card {
-    background: #2a2a2a;
+/* Mission & Vision Section (Light to contrast with dark sections) */
+.mission-vision-section {
+    padding: 8rem 1.5rem;
+    background-color: var(--brand-bg);
+}
+
+.mission-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    max-width: 80rem;
+    margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+    .mission-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.mv-card {
     padding: 2rem;
-    border-radius: 16px;
-    text-align: center;
-    transition: transform 0.3s ease;
+    border-left: 4px solid var(--brand-orange);
 }
 
-.value-card:hover {
-    transform: translateY(-5px);
+.mv-label {
+    font-size: 0.875rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--brand-teal);
+    margin-bottom: 1rem;
+    display: block;
 }
 
-.value-card h3 {
-    color: var(--primary-color, #f46a25);
+.mv-text {
     font-size: 1.5rem;
+    line-height: 1.4;
+    font-weight: 500;
+    color: black;
+}
+
+
+/* CTA Section "Write the next chapter" - DARK MODE */
+.cta-next-chapter {
+    padding: 6rem 1.5rem;
+    background-color: black;
+    /* Changed to Black */
+    color: white;
+    /* Changed to White */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cta-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    align-items: center;
+    max-width: 70rem;
+    margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+    .cta-flex {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+}
+
+.cta-text-side {
+    max-width: 30rem;
+}
+
+.cta-heading {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.cta-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.125rem;
+    color: #ccc;
+    /* Lighter gray for dark bg */
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-cta-red {
+    background-color: #EF4444;
+    color: white;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    transition: background 0.3s ease;
+}
+
+.btn-cta-red:hover {
+    background-color: #DC2626;
+}
+
+.btn-cta-outline {
+    border: 1px solid white;
+    /* White border */
+    color: white;
+    /* White text */
+    padding: 1rem 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+}
+
+.btn-cta-outline:hover {
+    background-color: white;
+    color: black;
+}
+
+/* Newsletter in CTA - Dark Mode Adjustments */
+.newsletter-minimal {
+    margin-top: 4rem;
+    width: 100%;
+}
+
+.stay-updated-label {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #3B82F6;
+    text-transform: uppercase;
     margin-bottom: 1rem;
 }
 
-.founders-section {
-    padding: 4rem 2rem;
-    text-align: center;
-}
-
-.founders-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 3rem;
-}
-
-.voice-section {
-    padding: 4rem 2rem;
+.input-minimal-container {
     background-color: #1a1a1a;
+    /* Darker input bg */
+    display: flex;
+    padding: 1rem;
+    max-width: 30rem;
+    margin: 0 auto;
+    align-items: center;
+    border: 1px solid #333;
+}
+
+.input-minimal {
+    background: transparent;
+    border: none;
+    flex-grow: 1;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    outline: none;
+}
+
+.input-arrow {
+    color: #F97316;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Founders Section (Styled with Black BG) */
+/* Connected Founders Styles */
+.founders-list-section {
+    padding: 6rem 1.5rem;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.founders-title-main {
     text-align: center;
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 4rem;
+    letter-spacing: -0.02em;
 }
 
-.voice-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 3rem auto 0;
+.founders-flex-connected {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    max-width: 90rem;
+    position: relative;
+    z-index: 10;
+    margin-bottom: 5rem;
+    /* Space before the text */
 }
 
-.testimonial-card {
-    background: #2a2a2a;
-    padding: 2rem;
-    border-radius: 16px;
-    font-style: italic;
-    border-left: 4px solid var(--primary-color, #f46a25);
+.founders-belief-text {
+    max-width: 60rem;
+    text-align: center;
+    margin-top: 2rem;
 }
 
-@media (max-width: 768px) {
-    .about-hero h1 {
-        font-size: 2.5rem;
+.founders-belief-text h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .founders-belief-text h2 {
+        font-size: 4rem;
     }
+}
 
-    .about-mission h2 {
-        font-size: 2rem;
-    }
+.founder-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 140px;
+    /* Reduced width to fit more */
+    margin: 0 1rem;
+    position: relative;
+}
+
+.founder-img-container {
+    margin-bottom: 1rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 120px;
+}
+
+.founder-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--founder-color, white);
+    background-color: black;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.founder-card:hover .founder-img {
+    transform: scale(1.1);
+}
+
+/* The Connecting Line */
+.founder-card::after {
+    content: '';
+    position: absolute;
+    top: 60px;
+    /* Half of image height (120px / 2) */
+    right: -50%;
+    /* Reach to the next item center approx */
+    width: 100%;
+    /* Span the gap */
+    height: 4px;
+    background-color: var(--founder-color, white);
+    z-index: 1;
+    transform: translateY(-50%);
+}
+
+/* Hide line for the last item */
+.founder-card:last-child::after {
+    display: none;
+}
+
+.founder-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    /* readable on bg image */
 }

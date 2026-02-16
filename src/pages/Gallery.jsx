@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import '../style/gallery.css';
 import '../style/city-new-york.css'; // Reusing the detail styles
+import Atlanta from '../components/cities/Atlanta';
+import Boston from '../components/cities/Boston';
+import London from '../components/cities/London';
 import Washington from '../components/cities/Washington';
+import NewYork from '../components/cities/NewYork';
 
 // City Data
 const cities = [
@@ -18,8 +22,8 @@ const cities = [
     {
         id: 'washington',
         name: 'Washington',
-        color: 'rgb(253, 132, 74)', // Orange
-        bgId: 'bg-orange',
+        color: '#3A4D39', // Green
+        bgId: 'bg-green',
         image: 'https://images.unsplash.com/photo-1617581629397-a72507c3de9e?q=80&w=2670&auto=format&fit=crop',
         subtitle: 'Capital Strides',
         description: 'History in motion. Navigate the monuments, the Mall, and the hidden trails of Rock Creek Park. A running experience monumental in scale.',
@@ -28,7 +32,7 @@ const cities = [
     {
         id: 'boston',
         name: 'Boston',
-        color: 'rgb(24, 34, 51)', // Navy
+        color: '#D12A5E', // Red/Pink
         bgId: 'bg-navy',
         image: 'https://images.unsplash.com/photo-1506199326888-0f305f2424b9?q=80&w=2670&auto=format&fit=crop',
         subtitle: 'The Marathon City',
@@ -38,8 +42,8 @@ const cities = [
     {
         id: 'atlanta',
         name: 'Atlanta',
-        color: 'rgb(66, 78, 52)', // Olive
-        bgId: 'bg-olive',
+        color: '#FD844A', // Orange
+        bgId: 'bg-orange',
         image: 'https://images.unsplash.com/photo-1575913251780-6bc150426555?q=80&w=2670&auto=format&fit=crop',
         subtitle: 'The Running City',
         description: 'Southern hospitality meets urban endurance. From loop of the BeltLine to the hills of Buckhead, find your pace in the city in a forest.',
@@ -48,7 +52,7 @@ const cities = [
     {
         id: 'london',
         name: 'London',
-        color: 'rgb(140, 119, 171)', // Purple
+        color: '#8C77AB', // Purple
         bgId: 'bg-purple',
         image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=2670&auto=format&fit=crop',
         subtitle: 'Royal Parks & River Runs',
@@ -160,6 +164,14 @@ export default function Gallery() {
             {/* DETAIL SECTION (Conditional) */}
             {selectedCity && selectedCity.id === 'washington' ? (
                 <Washington city={selectedCity} ref={detailsRef} />
+            ) : selectedCity && selectedCity.id === 'new-york' ? (
+                <NewYork city={selectedCity} ref={detailsRef} />
+            ) : selectedCity && selectedCity.id === 'atlanta' ? (
+                <Atlanta city={selectedCity} ref={detailsRef} />
+            ) : selectedCity && selectedCity.id === 'london' ? (
+                <London city={selectedCity} ref={detailsRef} />
+            ) : selectedCity && selectedCity.id === 'boston' ? (
+                <Boston city={selectedCity} ref={detailsRef} />
             ) : selectedCity ? (
                 <div ref={detailsRef} className="city-detail-section" style={{ backgroundColor: selectedCity.color }}>
                     <div className="city-content-wrapper fade-in-up">

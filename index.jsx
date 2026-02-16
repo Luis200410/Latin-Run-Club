@@ -9,7 +9,6 @@ import Gallery from './src/pages/Gallery';
 import Join from './src/pages/Join';
 import SignIn from './src/pages/SignIn';
 import SignUp from './src/pages/SignUp';
-import CityNewYork from './src/pages/CityNewYork';
 import ProtectedRoute from './src/components/ProtectedRoute';
 import AdminLayout from './src/pages/admin/AdminLayout';
 import Dashboard from './src/pages/admin/Dashboard';
@@ -37,7 +36,6 @@ root.render(
                         <Route path="join" element={<Join />} />
                         <Route path="signin" element={<SignIn />} />
                         <Route path="signup" element={<SignUp />} />
-                        <Route path="cities/new-york" element={<CityNewYork />} />
                     </Route>
 
                     {/* Admin Routes */}
