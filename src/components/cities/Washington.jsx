@@ -27,8 +27,8 @@ const Washington = forwardRef(({ city, onClose }, ref) => {
 
                 <div className="wa-gallery-scroll w-full overflow-x-auto hide-scrollbar flex gap-4 px-6 lg:px-12 py-10">
                     <div className="wa-gallery-item relative aspect-[16/9] overflow-hidden group">
-                        <div className="wa-gallery-img absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                            style={{ backgroundImage: `url('https://images.unsplash.com/photo-1617581629397-a72507c3de9e?q=80&w=2670&auto=format&fit=crop')`, filter: 'grayscale(100%) contrast(150%)' }}>
+                        <div className="wa-gallery-img wa-filter-grayscale absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                            style={{ backgroundImage: `url('https://images.unsplash.com/photo-1617581629397-a72507c3de9e?q=80&w=2670&auto=format&fit=crop')` }}>
                         </div>
                         <div className="wa-overlay absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div className="absolute bottom-8 left-8 right-8 pointer-events-none">
@@ -51,8 +51,8 @@ const Washington = forwardRef(({ city, onClose }, ref) => {
                     </div>
 
                     <div className="wa-gallery-item relative aspect-[16/9] overflow-hidden group">
-                        <div className="wa-gallery-img absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                            style={{ backgroundImage: `url('https://images.unsplash.com/photo-1557160854-e1e11f691d84?q=80&w=2574&auto=format&fit=crop')`, filter: 'grayscale(100%) contrast(150%)' }}>
+                        <div className="wa-gallery-img wa-filter-grayscale absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                            style={{ backgroundImage: `url('https://images.unsplash.com/photo-1557160854-e1e11f691d84?q=80&w=2574&auto=format&fit=crop')` }}>
                         </div>
                         <div className="wa-overlay absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div className="absolute bottom-8 left-8 right-8 pointer-events-none">
@@ -91,7 +91,7 @@ const Washington = forwardRef(({ city, onClose }, ref) => {
                             </div>
                             <button className="group mt-16 bg-black text-white flex items-center justify-between w-full md:w-64 px-6 py-10 transition-transform active:scale-95 wa-load-more">
                                 <span className="text-xl font-black uppercase tracking-tighter">Load More</span>
-                                <span className="material-symbols-outlined text-4xl group-hover:translate-x-2 transition-transform">→</span>
+                                <span className="material-symbols-outlined text-4xl group-hover:translate-x-2 transition-transform">arrow_forward</span>
                             </button>
                         </div>
                     </div>

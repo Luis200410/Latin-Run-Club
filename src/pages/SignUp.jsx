@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../style/refined-auth.css';
+import '../style/refined-auth.css';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const RUNNING_LEVELS = [
     { value: 0, label: 'Novice', color: '#22d3ee' },
@@ -23,7 +25,8 @@ export default function SignUp() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const { signup } = useAuth();
+    const { signup, googleSignIn } = useAuth();
+    const { t } = useLanguage();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,6 +34,18 @@ export default function SignUp() {
 
     const handleSliderChange = (e) => {
         setFormData({ ...formData, levelValue: Number(e.target.value) });
+    };
+
+    const handleGoogleSignIn = async () => {
+        try {
+            setError('');
+            setLoading(true);
+            await googleSignIn();
+            navigate('/');
+        } catch (err) {
+            setError('Failed to sign up with Google: ' + err.message);
+        }
+        setLoading(false);
     };
 
     const handleSubmit = async (e) => {
@@ -63,58 +78,58 @@ export default function SignUp() {
                 <div className="auth-brand-tag">LATIN RUN CLUB</div>
                 <div className="sidebar-content">
                     <h1 className="hero-title">
-                        JOIN<br />THE
+                        {t('join_the')}
                     </h1>
                 </div>
                 <div className="hero-footer">
-                    VELOCITY • CULTURE • COMMUNITY
+                    {t('velocity_culture_community')}
                 </div>
             </aside>
 
             {/* FORM AREA */}
             <main className="auth-form-container">
                 <header className="form-header">
-                    <span className="subtitle">ATHLETE PROFILE</span>
+                    <span className="subtitle">{t('athlete_profile')}</span>
                     <h2 className="main-title">
-                        Define your pace.<br />
-                        Claim your spot in the pack.
+                        {t('define_your_pace')}<br />
+                        {t('claim_your_spot')}
                     </h2>
                 </header>
 
                 <form className="auth-form" onSubmit={handleSubmit}>
 
                     <div className="form-group">
-                        <label>FULL NAME</label>
+                        <label>{t('full_name')}</label>
                         <input
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            placeholder="Enter your full name"
+                            placeholder={t('enter_full_name')}
                             required
                         />
                     </div>
 
                     <div className="input-row">
                         <div className="form-group">
-                            <label>EMAIL ADDRESS</label>
+                            <label>{t('email_address')}</label>
                             <input
                                 type="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                placeholder="name@domain.com"
+                                placeholder={t('email_placeholder')}
                                 required
                             />
                         </div>
                         <div className="form-group">
-                            <label>LOCATION / CITY</label>
+                            <label>{t('location_city')}</label>
                             <input
                                 type="text"
                                 name="location"
                                 value={formData.location}
                                 onChange={handleChange}
-                                placeholder="e.g. Mexico City"
+                                placeholder={t('location_placeholder')}
                             />
                         </div>
                     </div>
@@ -132,7 +147,7 @@ export default function SignUp() {
                     </div>
                     {/* Add password field properly since it's required for firebase */}
                     <div className="form-group">
-                        <label>PASSWORD</label>
+                        <label>{t('password')}</label>
                         <input
                             type="password"
                             value={password}
@@ -145,8 +160,8 @@ export default function SignUp() {
                     {/* SLIDER */}
                     <div className="level-selector">
                         <div className="level-header">
-                            <span className="level-title">RUNNING LEVEL</span>
-                            <span className="pro-badge">PRO STATUS</span>
+                            <span className="level-title">{t('running_level')}</span>
+                            <span className="pro-badge">{t('pro_status')}</span>
                         </div>
 
                         <div className="slider-wrapper">
@@ -189,11 +204,16 @@ export default function SignUp() {
                     </div>
 
                     <button type="submit" className="submit-btn" disabled={loading}>
-                        CREATE PROFILE <span style={{ marginLeft: '10px' }}>→</span>
+                        {t('create_profile')} <span style={{ marginLeft: '10px' }}>→</span>
+                    </button>
+
+                    <button type="button" onClick={handleGoogleSignIn} className="google-btn" disabled={loading}>
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" />
+                        {t('sign_in_google')}
                     </button>
 
                     <p className="legal-text">
-                        BY JOINING, YOU REPRESENT THE SPIRIT OF THE LATIN RUN CLUB COMMUNITY.
+                        {t('legal_text')}
                     </p>
                 </form>
             </main>

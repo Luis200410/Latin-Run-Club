@@ -5,13 +5,13 @@ footer {
     width: 100%;
 }
 
-.email{
+.email {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.email input{
+.email input {
     border: none;
     border-bottom: 2px solid rgb(0, 151, 178);
     background-color: transparent;
@@ -21,25 +21,26 @@ footer {
     outline: 0;
 }
 
-.social{
+.social {
     text-align: center;
     font-size: 2em;
     justify-content: space-around;
 }
 
-.inside-links, .social{
+.inside-links,
+.social {
     display: flex;
     list-style-type: none;
     gap: 5px;
 }
 
-.email input::placeholder{
+.email input::placeholder {
     color: gray;
     font-size: smaller;
     font-weight: bolder;
 }
 
-.email button{
+.email button {
     background-color: rgb(0, 151, 178);
     border: none;
     height: 5em;
@@ -49,15 +50,15 @@ footer {
     font-size: 0.7em;
 }
 
-.s2c2 p{
+.s2c2 p {
     font-weight: bolder;
 }
 
-.bottom small{
+.bottom small {
     color: grey;
 }
 
-.section-2{
+.section-2 {
     display: flex;
     margin-top: 3em;
     justify-content: space-between;
@@ -67,37 +68,37 @@ footer {
     width: 90%;
 }
 
-.s1c1 h1{
+.s1c1 h1 {
     margin: 0;
     padding: 0;
     font-weight: 600;
     font-size: 3em;
 }
 
-.red{
+.red {
     color: rgb(213, 45, 93);
     margin-top: -2em;
 }
 
-.c1-top p{
+.c1-top p {
     color: grey;
     font-size: 1.2em;
     font-weight: 400;
     margin-bottom: 2em;
 }
 
-a{
+a {
     text-decoration: none;
     cursor: pointer;
 }
 
-a:visited{
+a:visited {
     color: white;
 }
 
 /* cities */
 
-.colors{
+.colors {
     display: flex;
     justify-content: space-between;
     gap: 5px;
@@ -105,90 +106,117 @@ a:visited{
     width: 100%;
 }
 
-.city-1, .city-2, .city-3, .city-4, .city-5 {
+.city-1,
+.city-2,
+.city-3,
+.city-4,
+.city-5 {
     width: 25%;
 }
 
-.city-1{
+.city-1 {
     background-color: rgb(0, 151, 178);
 }
 
-.city-2{
+.city-2 {
     background-color: rgb(253, 132, 74);
 }
 
-.city-3{
+.city-3 {
     background-color: rgb(140, 119, 171);
 }
 
-.city-4{
+.city-4 {
     background-color: rgb(66, 78, 52);
 }
 
-.city-5{
+.city-5 {
     background-color: rgb(213, 45, 93);
 }
 
-.inside-links, .translate{
+.inside-links,
+.translate {
     font-weight: 500;
     font-size: 0.8em;
     gap: 15px;
 }
 
-.translate{
+.translate {
     display: flex;
+    align-items: center;
+}
+
+.lang-option {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    opacity: 0.5;
+}
+
+.lang-option:hover {
+    opacity: 0.8;
+}
+
+.lang-option.active {
+    opacity: 1;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: rgb(253, 132, 74);
+    /* Orange underline */
+    text-underline-offset: 4px;
 }
 
 /* media queries */
 
-@media (max-width: 599px){
+@media (max-width: 599px) {
 
     /* sections */
 
-    .section-1{
+    .section-1 {
         display: flex;
         flex-direction: column;
     }
 
-    .section-2{
+    .section-2 {
         margin: 0 auto;
         border-top: 0.5px solid grey;
     }
 
-    .s1c1{
+    .s1c1 {
         padding: 8em 2em 2em 2em;
     }
 
-    .s2c2{
+    .s2c2 {
         padding: 2em;
         margin: 0 auto;
     }
 
-    .c1-top h1{
+    .c1-top h1 {
         margin: -0.5em 0 0 0;
         font-size: 4em;
-        
+
     }
 
-    .email{
+    .email {
         width: 100%;
     }
 
-    .bottom, .colors, .social{
+    .bottom,
+    .colors,
+    .social {
         width: 75%;
         margin: 1em auto;
     }
 
-    .bottom > small{
+    .bottom>small {
         margin: 0 auto;
     }
 
 }
 
 @media (min-width: 600px) {
-        /* sections */
+    /* sections */
 
-    footer{
+    footer {
         background-color: black;
         color: white;
         display: flex;
@@ -201,32 +229,32 @@ a:visited{
 
     /* sections  */
 
-    .section-1{
+    .section-1 {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         width: fit-content;
     }
 
-    .section-2{
+    .section-2 {
         border-top: 0.5px solid grey;
     }
 
-    .s1c1 h1{
-        margin: -0.5em 0 0 0 ;
+    .s1c1 h1 {
+        margin: -0.5em 0 0 0;
     }
 
-    .s1c1{
+    .s1c1 {
         width: 50%;
     }
 
-    .c1-top{
-        width:75%;
+    .c1-top {
+        width: 75%;
     }
 
     /* s2c2 */
 
-    .s2c2{
+    .s2c2 {
         width: 50%;
         display: flex;
         flex-direction: column;
@@ -235,27 +263,29 @@ a:visited{
         text-align: start;
     }
 
-    
-    .bottom, .colors, .social{
+
+    .bottom,
+    .colors,
+    .social {
         width: 75%;
     }
 
 
-    .email{
+    .email {
         width: 75%;
     }
 
     /* lists  */
 
-    .social-container{
-        margin-left:  -3.5em;
+    .social-container {
+        margin-left: -3.5em;
     }
 }
 
 
-@media (min-width: 1024px){
+@media (min-width: 1024px) {
 
-    footer{
+    footer {
         background-color: black;
         color: white;
         display: flex;
@@ -268,32 +298,32 @@ a:visited{
 
     /* sections  */
 
-    .section-1{
+    .section-1 {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         width: fit-content;
     }
 
-    .section-2{
+    .section-2 {
         border-top: 0.5px solid grey;
     }
 
-    .s1c1 h1{
-        margin: -0.5em 0 0 0 ;
+    .s1c1 h1 {
+        margin: -0.5em 0 0 0;
     }
 
-    .s1c1{
+    .s1c1 {
         width: 50%;
     }
 
-    .c1-top{
-        width:75%;
+    .c1-top {
+        width: 75%;
     }
 
     /* s2c2 */
 
-    .s2c2{
+    .s2c2 {
         width: 50%;
         display: flex;
         flex-direction: column;
@@ -302,19 +332,21 @@ a:visited{
         text-align: start;
     }
 
-    
-    .bottom, .colors, .social{
+
+    .bottom,
+    .colors,
+    .social {
         width: 75%;
     }
 
 
-    .email{
+    .email {
         width: 75%;
     }
 
     /* lists  */
 
-    .social-container{
-        margin-left:  -3.5em;
+    .social-container {
+        margin-left: -3.5em;
     }
 }

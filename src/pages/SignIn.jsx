@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../style/refined-auth.css';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
@@ -9,7 +10,20 @@ export default function SignIn() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, googleSignIn } = useAuth();
+    const { t } = useLanguage();
+
+    const handleGoogleSignIn = async () => {
+        try {
+            setError('');
+            setLoading(true);
+            await googleSignIn();
+            navigate('/');
+        } catch (err) {
+            setError('Failed to sign in with Google: ' + err.message);
+        }
+        setLoading(false);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,10 +45,10 @@ export default function SignIn() {
                 <div className="auth-brand-tag">LATIN RUN CLUB</div>
                 <div className="sidebar-content">
                     <h1 className="hero-title">
-                        WELCOME<br />BACK
+                        {t('welcome_back')}
                     </h1>
                     <div className="hero-footer">
-                        VELOCITY • CULTURE • COMMUNITY
+                        {t('velocity_culture_community')}
                     </div>
                 </div>
             </aside>
@@ -42,10 +56,10 @@ export default function SignIn() {
             {/* RIGHT FORM */}
             <main className="auth-form-container">
                 <header className="form-header">
-                    <span className="subtitle">MEMBER ACCESS</span>
+                    <span className="subtitle">{t('member_access')}</span>
                     <h2 className="main-title">
-                        Lace up.<br />
-                        Let's run.
+                        {t('lace_up')}<br />
+                        {t('lets_run')}
                     </h2>
                 </header>
 
@@ -54,18 +68,18 @@ export default function SignIn() {
                 <form className="auth-form" onSubmit={handleSubmit}>
 
                     <div className="form-group">
-                        <label>EMAIL ADDRESS</label>
+                        <label>{t('email_address')}</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="name@domain.com"
+                            placeholder={t('email_placeholder')}
                             required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>PASSWORD</label>
+                        <label>{t('password')}</label>
                         <input
                             type="password"
                             value={password}
@@ -76,11 +90,16 @@ export default function SignIn() {
                     </div>
 
                     <button type="submit" className="submit-btn" disabled={loading} style={{ background: '#1a1a1a', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
-                        LOG IN <span className="submit-arrow">→</span>
+                        {t('log_in')} <span className="submit-arrow">→</span>
+                    </button>
+
+                    <button type="button" onClick={handleGoogleSignIn} className="google-btn" disabled={loading}>
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" />
+                        {t('sign_in_google')}
                     </button>
 
                     <p className="legal-text">
-                        Don't have an account? <Link to="/signup" style={{ color: '#1a1a1a', fontWeight: 'bold' }}>Sign Up</Link>
+                        {t('dont_have_account')} <Link to="/signup" style={{ color: '#1a1a1a', fontWeight: 'bold' }}>{t('sign_up')}</Link>
                     </p>
                 </form>
             </main>
