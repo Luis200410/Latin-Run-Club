@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { User } from "lucide-react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,16 +47,24 @@ export default function Header() {
             <li>
               <Link to="/join">Join</Link>
             </li>
-            {currentUser && (
-              <li>
-                <Link to="/dashboard">Dashboard</Link>
-              </li>
-            )}
           </ul>
           {currentUser ? (
-            <button className="log" onClick={handleLogout}>
-              <i></i>Log Out
-            </button>
+            <div className="user-nav-actions">
+              <Link to="/dashboard" className="btn-dashboard">
+                Dashboard
+              </Link>
+              <Link
+                to="/dashboard/profile"
+                className="btn-profile"
+                title="My Profile"
+              >
+                <User size={20} />
+                <span className="profile-text">Profile</span>
+              </Link>
+              <button className="log log-out-ghost" onClick={handleLogout}>
+                Log Out
+              </button>
+            </div>
           ) : (
             <Link to="/signin">
               <button className="log">
