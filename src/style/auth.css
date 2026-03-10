@@ -13,12 +13,18 @@
 
 .auth-box {
     background: #1a1a1a;
-    padding: 3rem;
+    padding: 2rem var(--page-padding);
     border-radius: 16px;
     width: 100%;
     max-width: 450px;
     border: 1px solid #333;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 768px) {
+    .auth-box {
+        padding: 3rem;
+    }
 }
 
 .auth-header {
