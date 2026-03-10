@@ -1,13 +1,14 @@
 header {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
-    width: 100vw;
-    margin: 0 auto;
-    padding: 1em 3em;
+    width: 100%;
+    margin: 0;
+    padding: 1.5rem var(--page-padding);
     font-weight: 500;
     position: relative;
     box-sizing: border-box;
+    z-index: 1000;
 }
 
 .list {
@@ -82,7 +83,7 @@ header {
     header {
         flex-direction: column;
         align-items: stretch;
-        padding: 1em;
+        padding: 1rem var(--page-padding);
     }
 
     .logo-container {

@@ -34,12 +34,20 @@
 .links {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
-a {
+.links a {
     color: white;
-    padding: 2em;
-
+    padding: 2rem var(--page-padding);
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 .join {
@@ -56,15 +64,15 @@ a {
 
 @media (max-width: 599px) {
     .main h1 {
-        font-size: 3em;
+        font-size: 3rem;
     }
 
     .title {
-        margin: 8em 1em 5em 1em;
+        margin: 6rem var(--page-padding);
     }
 
     .links a {
-        padding: 1.5em;
+        padding: 1.5rem var(--page-padding);
     }
 }
 
@@ -74,6 +82,6 @@ a {
     }
 
     .title {
-        margin: 10em 1em 8em 1em;
+        margin: 10rem var(--page-padding);
     }
 }

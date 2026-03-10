@@ -1,16 +1,47 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+:root {
+    --page-padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    :root {
+        --page-padding: 3rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    :root {
+        --page-padding: 5vw;
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
 
 body {
     font-family: "Jost", sans-serif;
     background-color: rgb(242, 239, 235);
     color: black;
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
+    line-height: 1.5;
 }
 
 main {
     display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
 }
 
 .founders {
@@ -37,12 +68,6 @@ main {
     min-height: 100vh;
 }
 
-main {
-    flex: 1;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
 
 body {
     min-height: 100vh;
