@@ -2,19 +2,25 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase/config";
-import { getPastUserRuns } from "../../services/firestoreService";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import app from "../../firebase/config";
+import { getPastUserRuns, disconnectStrava } from "../../services/firestoreService";
+import QRCode from "react-qr-code";
 import {
   User,
   Camera,
   MapPin,
-  Mail,
   Calendar,
   Edit3,
   Save,
   X,
   Award,
   CheckCircle,
-  ExternalLink,
+  Download,
+  Trophy,
+  RefreshCw,
+  Unlink,
+  Activity,
 } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
@@ -61,6 +67,11 @@ export default function ProfilePage() {
   const [pastRuns, setPastRuns] = useState([]);
   const [loadingRuns, setLoadingRuns] = useState(true);
 
+  const [stravaActivities, setStravaActivities] = useState([]);
+  const [stravaLiveStats, setStravaLiveStats] = useState(null);
+  const [loadingStrava, setLoadingStrava] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
+
   useEffect(() => {
     async function fetchPastRuns() {
       if (!currentUser?.uid) return;
@@ -75,6 +86,98 @@ export default function ProfilePage() {
     }
     fetchPastRuns();
   }, [currentUser]);
+
+  useEffect(() => {
+    if (userProfile?.stravaConnected && userProfile?.stravaAccessToken) {
+      fetchStravaData(userProfile.stravaAccessToken);
+    }
+  }, [userProfile?.stravaConnected]);
+
+  async function ensureValidToken() {
+    const expiresAt = userProfile?.stravaTokenExpiresAt;
+    const now = Math.floor(Date.now() / 1000);
+    if (expiresAt && now >= expiresAt - 60) {
+      const fns = getFunctions(app);
+      await httpsCallable(fns, "stravaRefresh")({ uid: currentUser.uid });
+    }
+    return userProfile?.stravaAccessToken;
+  }
+
+  async function fetchStravaData(token) {
+    if (!token) return;
+    setLoadingStrava(true);
+    try {
+      const accessToken = token || (await ensureValidToken());
+      const headers = { Authorization: `Bearer ${accessToken}` };
+
+      const [athleteRes, activitiesRes] = await Promise.all([
+        fetch("https://www.strava.com/api/v3/athlete/stats?" +
+          `id=${userProfile?.stravaAthleteId}`, { headers }),
+        fetch("https://www.strava.com/api/v3/athlete/activities?per_page=10&type=Run", { headers }),
+      ]);
+
+      if (athleteRes.ok) {
+        const stats = await athleteRes.json();
+        const totals = stats.all_run_totals || {};
+        setStravaLiveStats({
+          activities: totals.count || 0,
+          totalKm: Math.round((totals.distance || 0) / 1000),
+          avgPace: totals.elapsed_time && totals.distance
+            ? formatPace(totals.elapsed_time, totals.distance)
+            : "—",
+        });
+      }
+
+      if (activitiesRes.ok) {
+        const acts = await activitiesRes.json();
+        setStravaActivities(Array.isArray(acts) ? acts.slice(0, 10) : []);
+      }
+    } catch (err) {
+      console.error("Strava fetch error:", err);
+    } finally {
+      setLoadingStrava(false);
+    }
+  }
+
+  function formatPace(elapsedSeconds, distanceMeters) {
+    if (!distanceMeters) return "—";
+    const paceSecondsPerKm = (elapsedSeconds / distanceMeters) * 1000;
+    const mins = Math.floor(paceSecondsPerKm / 60);
+    const secs = Math.round(paceSecondsPerKm % 60);
+    return `${mins}:${String(secs).padStart(2, "0")} /km`;
+  }
+
+  const handleStravaRefresh = async () => {
+    const token = await ensureValidToken();
+    await fetchStravaData(token);
+    toast.success("Strava data refreshed!");
+  };
+
+  const handleStravaDisconnect = async () => {
+    if (!window.confirm("Disconnect your Strava account?")) return;
+    setDisconnecting(true);
+    try {
+      await disconnectStrava(currentUser.uid);
+      await updateUserProfile({
+        stravaConnected: false,
+        stravaAthleteId: null,
+        stravaAccessToken: null,
+        stravaRefreshToken: null,
+        stravaTokenExpiresAt: null,
+        stravaActivities: 0,
+        stravaTotalKm: 0,
+        stravaAvgPace: "—",
+      });
+      setStravaActivities([]);
+      setStravaLiveStats(null);
+      toast.success("Strava disconnected.");
+    } catch (err) {
+      toast.error("Failed to disconnect Strava");
+      console.error(err);
+    } finally {
+      setDisconnecting(false);
+    }
+  };
 
   const firstName =
     userProfile?.firstName ||
@@ -137,7 +240,6 @@ export default function ProfilePage() {
   };
 
   const handleStravaConnect = () => {
-    // Strava OAuth redirect
     const clientId = import.meta.env.VITE_STRAVA_CLIENT_ID;
     if (!clientId) {
       toast.error(
@@ -145,10 +247,31 @@ export default function ProfilePage() {
       );
       return;
     }
-    const redirectUri = `${window.location.origin}/dashboard/profile`;
-    const scope = "read,activity:read";
-    const url = `https://www.strava.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+    const redirectUri = `${window.location.origin}/strava-callback`;
+    const scope = "read,activity:read_all";
+    const url = `https://www.strava.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
     window.location.href = url;
+  };
+
+  const handleDownloadQR = () => {
+    const svg = document.getElementById("user-qr-code");
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    canvas.width = 300;
+    canvas.height = 300;
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.onload = () => {
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, 300, 300);
+      ctx.drawImage(img, 0, 0, 300, 300);
+      const a = document.createElement("a");
+      a.download = `lrc-qr-${currentUser?.uid?.slice(0, 8)}.png`;
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    };
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
   };
 
   const joinedDate = userProfile?.joinedAt?.toDate?.()
@@ -324,44 +447,48 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Stats Section */}
+        {/* Stats + QR Code Section */}
         <div className="dash-card">
           <div className="profile-section">
             <h3>Your Stats</h3>
             <div
               className="stats-strip"
-              style={{ gridTemplateColumns: "1fr 1fr", margin: 0 }}
+              style={{ gridTemplateColumns: "1fr 1fr 1fr", margin: "0 0 20px" }}
             >
               <div className="stat-card">
-                <div
-                  className="stat-icon"
-                  style={{
-                    background: "var(--lrc-teal-light)",
-                    color: "var(--lrc-teal)",
-                  }}
-                >
+                <div className="stat-icon" style={{ background: "var(--lrc-teal-light)", color: "var(--lrc-teal)" }}>
                   <CheckCircle size={20} />
                 </div>
-                <div className="stat-value">
-                  {userProfile?.runsAttended || 0}
-                </div>
+                <div className="stat-value">{userProfile?.runsAttended || 0}</div>
                 <div className="stat-label">Runs Attended</div>
               </div>
               <div className="stat-card">
-                <div
-                  className="stat-icon"
-                  style={{
-                    background: "var(--lrc-orange-light)",
-                    color: "var(--lrc-orange)",
-                  }}
-                >
+                <div className="stat-icon" style={{ background: "var(--lrc-orange-light)", color: "var(--lrc-orange)" }}>
                   <Award size={20} />
                 </div>
-                <div className="stat-value">
-                  {userProfile?.totalDistanceKm || 0}
-                </div>
+                <div className="stat-value">{userProfile?.totalDistanceKm || 0}</div>
                 <div className="stat-label">KM Logged</div>
               </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: "var(--lrc-purple-light)", color: "var(--lrc-purple)" }}>
+                  <Trophy size={20} />
+                </div>
+                <div className="stat-value">{userProfile?.totalPoints || 0}</div>
+                <div className="stat-label">Points</div>
+              </div>
+            </div>
+
+            <h3 style={{ marginTop: 8 }}>My QR Code</h3>
+            <p style={{ fontSize: 13, color: "var(--lrc-text-secondary)", marginBottom: 16 }}>
+              Show this at races for the admin to scan and confirm your attendance.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+              <div className="qr-code-wrapper" style={{ padding: 20, background: "white", borderRadius: 12, border: "1px solid var(--lrc-border)" }}>
+                <QRCode id="user-qr-code" value={currentUser?.uid || "unknown"} size={160} />
+              </div>
+              <button className="btn-secondary" onClick={handleDownloadQR} style={{ fontSize: 13, padding: "8px 18px" }}>
+                <Download size={14} /> Download QR
+              </button>
             </div>
           </div>
         </div>
@@ -463,67 +590,119 @@ export default function ProfilePage() {
       {/* Strava Integration */}
       <div className="dash-card" style={{ marginTop: 24 }}>
         <div className="profile-section" style={{ marginBottom: 0 }}>
-          <h3>Strava Integration</h3>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+            <h3 style={{ margin: 0, border: "none", padding: 0 }}>Strava Integration</h3>
+            {userProfile?.stravaConnected && (
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  className="btn-secondary"
+                  onClick={handleStravaRefresh}
+                  disabled={loadingStrava}
+                  style={{ padding: "6px 12px", fontSize: 13 }}
+                >
+                  <RefreshCw size={13} /> {loadingStrava ? "Loading..." : "Refresh"}
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={handleStravaDisconnect}
+                  disabled={disconnecting}
+                  style={{ padding: "6px 12px", fontSize: 13, borderColor: "var(--lrc-pink)", color: "var(--lrc-pink)" }}
+                >
+                  <Unlink size={13} /> {disconnecting ? "..." : "Disconnect"}
+                </button>
+              </div>
+            )}
+          </div>
 
           {userProfile?.stravaConnected ? (
             <div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginBottom: 16,
-                  color: "var(--lrc-olive)",
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, color: "var(--lrc-olive)" }}>
                 <CheckCircle size={16} />
-                <span style={{ fontWeight: 600, fontSize: 14 }}>
-                  Connected to Strava
-                </span>
+                <span style={{ fontWeight: 600, fontSize: 14 }}>Connected to Strava</span>
               </div>
               <div className="strava-stats-grid">
                 <div className="stat-card">
                   <div className="stat-value">
-                    {userProfile?.stravaActivities || 0}
+                    {stravaLiveStats?.activities ?? userProfile?.stravaActivities ?? 0}
                   </div>
                   <div className="stat-label">Activities</div>
                 </div>
                 <div className="stat-card">
                   <div className="stat-value">
-                    {userProfile?.stravaTotalKm || 0}
+                    {stravaLiveStats?.totalKm ?? userProfile?.stravaTotalKm ?? 0}
                   </div>
                   <div className="stat-label">Total KM</div>
                 </div>
                 <div className="stat-card">
                   <div className="stat-value">
-                    {userProfile?.stravaAvgPace || "—"}
+                    {stravaLiveStats?.avgPace ?? userProfile?.stravaAvgPace ?? "—"}
                   </div>
                   <div className="stat-label">Avg Pace</div>
                 </div>
               </div>
+
+              {/* Recent Strava Runs */}
+              {stravaActivities.length > 0 && (
+                <div style={{ marginTop: 24 }}>
+                  <h4 style={{ margin: "0 0 12px", fontSize: 15, display: "flex", alignItems: "center", gap: 8 }}>
+                    <Activity size={16} style={{ color: "var(--lrc-orange)" }} />
+                    Recent Strava Runs
+                  </h4>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {stravaActivities.map((act) => {
+                      const distKm = ((act.distance || 0) / 1000).toFixed(1);
+                      const pace = act.moving_time && act.distance
+                        ? formatPace(act.moving_time, act.distance)
+                        : "—";
+                      const elevGain = act.total_elevation_gain
+                        ? `${Math.round(act.total_elevation_gain)}m`
+                        : null;
+                      const dateStr = act.start_date_local
+                        ? format(new Date(act.start_date_local), "MMM d, yyyy")
+                        : "";
+                      return (
+                        <div
+                          key={act.id}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 12,
+                            padding: "10px 12px",
+                            background: "var(--lrc-bg)",
+                            borderRadius: "var(--lrc-radius-md)",
+                            fontSize: 13,
+                          }}
+                        >
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 600, color: "var(--lrc-text-primary)", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {act.name || "Run"}
+                            </div>
+                            <div style={{ color: "var(--lrc-text-muted)", fontSize: 12 }}>{dateStr}</div>
+                          </div>
+                          <div style={{ textAlign: "right", flexShrink: 0 }}>
+                            <div style={{ fontWeight: 700, color: "var(--lrc-teal)" }}>{distKm} km</div>
+                            <div style={{ color: "var(--lrc-text-secondary)", fontSize: 12 }}>{pace}{elevGain ? ` · ↑${elevGain}` : ""}</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {loadingStrava && stravaActivities.length === 0 && (
+                <p style={{ color: "var(--lrc-text-muted)", fontSize: 13, marginTop: 16 }}>
+                  Loading Strava data...
+                </p>
+              )}
             </div>
           ) : (
             <div style={{ textAlign: "center", padding: "20px 0" }}>
-              <p
-                style={{
-                  color: "var(--lrc-text-secondary)",
-                  marginBottom: 16,
-                  fontSize: 14,
-                }}
-              >
-                Connect your Strava account to automatically sync your running
-                data and see detailed stats.
+              <p style={{ color: "var(--lrc-text-secondary)", marginBottom: 16, fontSize: 14 }}>
+                Connect your Strava account to automatically sync your running data and see detailed stats.
               </p>
-              <button
-                className="strava-connect-btn"
-                onClick={handleStravaConnect}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
+              <button className="strava-connect-btn" onClick={handleStravaConnect}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
                 </svg>
                 Connect with Strava

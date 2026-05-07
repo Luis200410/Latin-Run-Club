@@ -37,6 +37,8 @@ const MOCK_PROFILE = {
   photoURL: "",
   runsAttended: 12,
   totalDistanceKm: 87,
+  totalPoints: 20,
+  isAdmin: true,
   stravaConnected: false,
   joinedAt: { toDate: () => new Date("2025-06-15") },
 };
@@ -166,6 +168,8 @@ export function AuthProvider({ children }) {
   const value = {
     currentUser,
     userProfile,
+    loading,
+    isAdmin: userProfile?.isAdmin === true,
     signup,
     login,
     logout,
@@ -175,7 +179,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

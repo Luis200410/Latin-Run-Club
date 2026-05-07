@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "./src/context/LanguageContext";
 import { AuthProvider } from "./src/context/AuthContext";
 import ProtectedRoute from "./src/components/ProtectedRoute";
+import AdminRoute from "./src/components/AdminRoute";
 import { Toaster } from "react-hot-toast";
 
 // Styles
@@ -28,6 +29,10 @@ const TestimonialManager = lazy(
   () => import("./src/pages/admin/TestimonialManager"),
 );
 const EventsManager = lazy(() => import("./src/pages/admin/EventsManager"));
+const RaceManager = lazy(() => import("./src/pages/admin/RaceManager"));
+const AdminAttendance = lazy(
+  () => import("./src/pages/admin/AdminAttendance"),
+);
 
 // Lazy Load Member Dashboard Pages
 const DashboardLayout = lazy(
@@ -41,9 +46,17 @@ const ExploreCities = lazy(
   () => import("./src/components/dashboard/ExploreCities"),
 );
 const RacesPage = lazy(() => import("./src/components/dashboard/RacesPage"));
+const RaceDetail = lazy(
+  () => import("./src/components/dashboard/RaceDetail"),
+);
+const Leaderboard = lazy(
+  () => import("./src/components/dashboard/Leaderboard"),
+);
 const ProfilePage = lazy(
   () => import("./src/components/dashboard/ProfilePage"),
 );
+const RaceConfirm = lazy(() => import("./src/pages/RaceConfirm"));
+const StravaCallback = lazy(() => import("./src/pages/StravaCallback"));
 
 // Loading Fallback
 const LoadingScreen = () => (
@@ -71,6 +84,24 @@ root.render(
               <Route path="signup" element={<SignUp />} />
             </Route>
 
+            {/* Standalone protected routes (outside dashboard layout) */}
+            <Route
+              path="/race/:raceId/confirm"
+              element={
+                <ProtectedRoute>
+                  <RaceConfirm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/strava-callback"
+              element={
+                <ProtectedRoute>
+                  <StravaCallback />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Member Dashboard Routes */}
             <Route
               path="/dashboard"
@@ -84,6 +115,8 @@ root.render(
               <Route path="city" element={<CityPage />} />
               <Route path="explore" element={<ExploreCities />} />
               <Route path="races" element={<RacesPage />} />
+              <Route path="race/:raceId" element={<RaceDetail />} />
+              <Route path="leaderboard" element={<Leaderboard />} />
               <Route path="profile" element={<ProfilePage />} />
             </Route>
 
@@ -91,14 +124,16 @@ root.render(
             <Route
               path="/admin"
               element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <AdminLayout />
-                </ProtectedRoute>
+                </AdminRoute>
               }
             >
               <Route index element={<Dashboard />} />
               <Route path="testimonials" element={<TestimonialManager />} />
               <Route path="events" element={<EventsManager />} />
+              <Route path="races" element={<RaceManager />} />
+              <Route path="attendance" element={<AdminAttendance />} />
             </Route>
           </Routes>
         </Suspense>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   getRaces,
   toggleRaceParticipation,
@@ -8,10 +9,10 @@ import {
   Trophy,
   Calendar,
   MapPin,
-  Filter,
-  Users,
   ExternalLink,
   CheckCircle,
+  ChevronRight,
+  Globe,
 } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
@@ -42,8 +43,17 @@ const CITY_OPTIONS = [
   { value: "london", label: "London" },
 ];
 
+const CITY_LABELS = {
+  new_york: "NYC",
+  washington_dc: "DC",
+  boston: "BOS",
+  atlanta: "ATL",
+  london: "LON",
+};
+
 export default function RacesPage() {
-  const { currentUser } = useAuth();
+  const { currentUser, userProfile } = useAuth();
+  const navigate = useNavigate();
   const [races, setRaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterCity, setFilterCity] = useState("");
@@ -73,16 +83,25 @@ export default function RacesPage() {
       if (toggleLoading[raceId]) return;
       setToggleLoading((prev) => ({ ...prev, [raceId]: true }));
       try {
-        const added = await toggleRaceParticipation(raceId, currentUser.uid);
+        const homeCity = userProfile?.city || "new_york";
+        const added = await toggleRaceParticipation(raceId, currentUser.uid, homeCity);
         setRaces((prev) =>
           prev.map((r) => {
             if (r.id !== raceId) return r;
             const participants = r.participants || [];
+            const participantCities = r.participantCities || {};
             return {
               ...r,
               participants: added
                 ? [...participants, currentUser.uid]
                 : participants.filter((id) => id !== currentUser.uid),
+              participantCities: added
+                ? { ...participantCities, [currentUser.uid]: homeCity }
+                : Object.fromEntries(
+                    Object.entries(participantCities).filter(
+                      ([k]) => k !== currentUser.uid,
+                    ),
+                  ),
             };
           }),
         );
@@ -93,7 +112,7 @@ export default function RacesPage() {
         setToggleLoading((prev) => ({ ...prev, [raceId]: false }));
       }
     },
-    [currentUser, toggleLoading],
+    [currentUser, userProfile, toggleLoading],
   );
 
   // Client-side distance filter
@@ -215,26 +234,45 @@ export default function RacesPage() {
                   )}
                 </div>
 
-                {/* Participant avatars */}
+                {/* Participant avatars with visitor badges */}
                 {participantCount > 0 && (
                   <div className="race-participants">
                     <div className="race-avatar-stack">
-                      {race.participants.slice(0, 4).map((uid, i) => (
-                        <div
-                          key={uid}
-                          className="member-avatar"
-                          style={{
-                            background: AVATAR_COLORS[i % AVATAR_COLORS.length],
-                          }}
-                        >
-                          🏃
-                        </div>
-                      ))}
+                      {race.participants.slice(0, 4).map((uid, i) => {
+                        const homeCity = race.participantCities?.[uid];
+                        const isVisitor = homeCity && homeCity !== race.city;
+                        return (
+                          <div key={uid} className="race-avatar-wrapper">
+                            <div
+                              className="member-avatar"
+                              style={{
+                                background: AVATAR_COLORS[i % AVATAR_COLORS.length],
+                              }}
+                            >
+                              🏃
+                            </div>
+                            {isVisitor && (
+                              <span className="race-visitor-badge">
+                                {CITY_LABELS[homeCity] || "?"}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                    <span className="race-participant-count">
-                      {participantCount}{" "}
-                      {participantCount === 1 ? "runner" : "runners"} from LRC
-                    </span>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      <span className="race-participant-count">
+                        {participantCount}{" "}
+                        {participantCount === 1 ? "runner" : "runners"} from LRC
+                      </span>
+                      {Object.values(race.participantCities || {}).some(
+                        (c) => c !== race.city,
+                      ) && (
+                        <span className="race-visitor-note">
+                          <Globe size={11} /> Visitors from other cities
+                        </span>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -248,16 +286,25 @@ export default function RacesPage() {
                     {isRunning ? "I'm running! ✓" : "I'm running this!"}
                   </button>
 
-                  {race.url && (
-                    <a
-                      href={race.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    {race.url && (
+                      <a
+                        href={race.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="race-link"
+                      >
+                        Register <ExternalLink size={12} />
+                      </a>
+                    )}
+                    <button
                       className="race-link"
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit" }}
+                      onClick={() => navigate(`/dashboard/race/${race.id}`)}
                     >
-                      Register <ExternalLink size={12} />
-                    </a>
-                  )}
+                      Details <ChevronRight size={12} />
+                    </button>
+                  </div>
                 </div>
               </div>
             );

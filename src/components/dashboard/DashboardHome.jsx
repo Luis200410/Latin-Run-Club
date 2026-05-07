@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
   getNextRun,
   toggleRunRSVP,
   subscribeToActivityFeed,
   getCityMembers,
+  getLeaderboard,
 } from "../../services/firestoreService";
 import {
   Calendar,
@@ -220,6 +222,7 @@ export default function DashboardHome() {
   const [nextRun, setNextRun] = useState(null);
   const [feedItems, setFeedItems] = useState([]);
   const [memberCount, setMemberCount] = useState(0);
+  const [miniLeaderboard, setMiniLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [rsvpLoading, setRsvpLoading] = useState(false);
 
@@ -234,12 +237,14 @@ export default function DashboardHome() {
 
     async function load() {
       try {
-        const [run, members] = await Promise.all([
+        const [run, members, leaders] = await Promise.all([
           getNextRun(city),
           getCityMembers(city),
+          getLeaderboard(city),
         ]);
         setNextRun(run);
         setMemberCount(members.length);
+        setMiniLeaderboard(leaders.slice(0, 5));
 
         unsubFeed = subscribeToActivityFeed(city, (items) => {
           setFeedItems(items);
@@ -410,38 +415,39 @@ export default function DashboardHome() {
 
         <div className="dash-card">
           <div className="dash-card-header">
-            <span className="dash-card-title">Quick Links</span>
+            <span className="dash-card-title">
+              <Trophy size={16} style={{ display: "inline", marginRight: 6, verticalAlign: "middle", color: "var(--lrc-orange)" }} />
+              City Leaderboard
+            </span>
+            <Link
+              to="/dashboard/leaderboard"
+              style={{ fontSize: 13, color: "var(--lrc-teal)", fontWeight: 600, textDecoration: "none" }}
+            >
+              See all →
+            </Link>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <a
-              href="/dashboard/city"
-              className="btn-secondary"
-              style={{ justifyContent: "center", textDecoration: "none" }}
-            >
-              <MapPin size={16} /> My City Chapter
-            </a>
-            <a
-              href="/dashboard/races"
-              className="btn-secondary"
-              style={{ justifyContent: "center", textDecoration: "none" }}
-            >
-              <Trophy size={16} /> Browse Races
-            </a>
-            <a
-              href="/dashboard/explore"
-              className="btn-secondary"
-              style={{ justifyContent: "center", textDecoration: "none" }}
-            >
-              <Users size={16} /> Explore Other Cities
-            </a>
-            <a
-              href="/dashboard/profile"
-              className="btn-accent"
-              style={{ justifyContent: "center", textDecoration: "none" }}
-            >
-              <Users size={16} /> Edit Profile
-            </a>
-          </div>
+          {miniLeaderboard.length === 0 ? (
+            <p style={{ fontSize: 14, color: "var(--lrc-text-muted)", padding: "8px 0" }}>
+              No rankings yet — attend a race to earn points!
+            </p>
+          ) : (
+            <ul className="leaderboard-list">
+              {miniLeaderboard.map((entry, i) => {
+                const isCurrentUser = entry.id === currentUser?.uid;
+                const rankClass = i === 0 ? "rank-1" : i === 1 ? "rank-2" : i === 2 ? "rank-3" : "";
+                return (
+                  <li key={entry.id} className={`leaderboard-item${isCurrentUser ? " leaderboard-you" : ""}`}>
+                    <div className={`leaderboard-rank ${rankClass}`}>{i + 1}</div>
+                    <div className="leaderboard-name">
+                      {entry.firstName} {entry.lastName}
+                      {isCurrentUser && <span style={{ color: "var(--lrc-teal)", fontSize: 11, marginLeft: 4 }}>you</span>}
+                    </div>
+                    <div className="leaderboard-value">{entry.totalPoints || 0} pts</div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </div>
     </div>
