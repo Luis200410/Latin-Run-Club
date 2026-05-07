@@ -25,8 +25,8 @@
     max-width: 80rem;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: var(--page-padding);
+    padding-right: var(--page-padding);
 }
 
 .reveal-on-scroll {
@@ -42,7 +42,7 @@
 
 /* New Typographic Hero "OUR STORY & HISTORY" */
 .about-hero-section {
-    padding: 6rem 1.5rem;
+    padding: 6rem var(--page-padding);
     background-color: var(--brand-bg);
 }
 
@@ -60,7 +60,7 @@
     text-transform: uppercase;
     letter-spacing: -0.04em;
     color: black;
-    margin-bottom: 2rem;
+    margin-bottom: var(--page-padding);
 }
 
 @media (min-width: 1200px) {
@@ -94,7 +94,7 @@
 .hero-established {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: var(--page-padding);
 }
 
 .est-bar {
@@ -150,14 +150,14 @@
     position: relative;
     max-width: 60rem;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 var(--page-padding);
     /* Reduced padding */
 }
 
 /* Vertical Center Line */
 .timeline-line {
     position: absolute;
-    left: 1.5rem;
+    left: var(--page-padding);
     top: 0;
     bottom: 0;
     width: 1px;
@@ -236,7 +236,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--page-padding);
     display: block;
 }
 
@@ -261,7 +261,7 @@
     left: 0;
     width: 100%;
     text-align: center;
-    font-size: 25vw;
+    font-size: 2var(--page-padding);
     font-weight: 900;
     color: rgba(0, 0, 0, 0.03);
     pointer-events: none;
@@ -283,7 +283,7 @@
 
 .banner-content {
     max-width: 60rem;
-    padding: 0 1.5rem;
+    padding: 0 var(--page-padding);
     z-index: 10;
 }
 
@@ -293,7 +293,7 @@
     text-transform: uppercase;
     line-height: 0.95;
     letter-spacing: -0.02em;
-    margin-bottom: 2rem;
+    margin-bottom: var(--page-padding);
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -313,7 +313,7 @@
 
 /* Mission & Vision Section (Light to contrast with dark sections) */
 .mission-vision-section {
-    padding: 8rem 1.5rem;
+    padding: 8rem var(--page-padding);
     background-color: var(--brand-bg);
 }
 
@@ -332,7 +332,7 @@
 }
 
 .mv-card {
-    padding: 2rem;
+    padding: var(--page-padding);
     border-left: 4px solid var(--brand-orange);
 }
 
@@ -347,7 +347,7 @@
 }
 
 .mv-text {
-    font-size: 1.5rem;
+    font-size: var(--page-padding);
     line-height: 1.4;
     font-weight: 500;
     color: black;
@@ -356,7 +356,7 @@
 
 /* CTA Section "Write the next chapter" - DARK MODE */
 .cta-next-chapter {
-    padding: 6rem 1.5rem;
+    padding: 6rem var(--page-padding);
     background-color: black;
     /* Changed to Black */
     color: white;
@@ -391,14 +391,14 @@
     text-transform: uppercase;
     line-height: 0.9;
     letter-spacing: -0.05em;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--page-padding);
     color: white;
 }
 
 .cta-sub {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 1.125rem;
+    font-size: 1.var(--page-padding);
     color: #ccc;
     /* Lighter gray for dark bg */
 }
@@ -412,7 +412,7 @@
 .btn-cta-red {
     background-color: #EF4444;
     color: white;
-    padding: 1rem 2rem;
+    padding: 1rem var(--page-padding);
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.875rem;
@@ -429,7 +429,7 @@
     /* White border */
     color: white;
     /* White text */
-    padding: 1rem 2rem;
+    padding: 1rem var(--page-padding);
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.875rem;
@@ -481,14 +481,14 @@
 
 .input-arrow {
     color: #F97316;
-    font-size: 1.5rem;
+    font-size: var(--page-padding);
     cursor: pointer;
 }
 
 /* Founders Section (Styled with Black BG) */
 /* Connected Founders Styles */
 .founders-list-section {
-    padding: 6rem 1.5rem;
+    padding: 6rem var(--page-padding);
     background-color: black;
     color: white;
     display: flex;
@@ -521,7 +521,7 @@
 .founders-belief-text {
     max-width: 60rem;
     text-align: center;
-    margin-top: 2rem;
+    margin-top: var(--page-padding);
 }
 
 .founders-belief-text h2 {
@@ -530,7 +530,7 @@
     text-transform: uppercase;
     line-height: 0.95;
     letter-spacing: -0.02em;
-    margin-bottom: 2rem;
+    margin-bottom: var(--page-padding);
 }
 
 @media (min-width: 768px) {

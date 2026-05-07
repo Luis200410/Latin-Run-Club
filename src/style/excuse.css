@@ -1,11 +1,10 @@
 .excuse-container {
-    padding: 4rem 2rem;
+    padding: 4rem var(--page-padding);
     width: 100%;
     margin: 0;
     font-family: 'Jost', sans-serif;
     color: black;
     background-color: #F2EFEB;
-    /* Match the off-white bg in image */
 }
 
 .excuse-content {
@@ -57,7 +56,7 @@
     line-height: 1.4;
     color: #333;
     margin: 0;
-    max-width: 25ch;
+    width: 100%;
 }
 
 /* RIGHT COLUMN */
@@ -107,16 +106,10 @@
     .excuse-content {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        /* 2 Columns */
         gap: 3rem;
-        /* Increased slightly for better look */
         align-items: start;
-        margin: 0 5vw;
-        /* Increased margin to prevent edge-touching */
-        max-width: 1400px;
-        /* Ensure it doesn't get ridiculously wide */
-        padding-right: 2rem;
-        /* Extra buffer on the right */
+        margin: 0 auto;
+        width: 100%;
     }
 
     .excuse-title {

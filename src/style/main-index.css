@@ -34,9 +34,10 @@
 .links {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
-.links a {
+a {
   color: white;
   padding: 2em;
 }

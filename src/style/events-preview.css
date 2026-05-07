@@ -12,8 +12,7 @@
 }
 
 .events-header {
-    padding: 0 5vw;
-    /* Match margins */
+    padding: 0 var(--page-padding);
     margin-bottom: 4rem;
     display: flex;
     justify-content: space-between;
@@ -49,13 +48,10 @@
 .events-grid {
     display: flex;
     flex-direction: column;
-    /* Default: Vertical Stack for Mobile */
     width: 100%;
     margin: 0;
-    padding: 0 5vw;
-    /* RESTORED MOBLE PADDING */
+    padding: 0 var(--page-padding);
     gap: 3rem;
-    /* CLEAR GAP */
     height: auto;
 }
 
@@ -64,20 +60,13 @@
     .events-grid {
         display: flex;
         flex-direction: row;
-        /* Horizontal */
         flex-wrap: nowrap;
-        /* Prevent wrap */
         overflow-x: auto;
         overflow-y: hidden;
-        /* Hide vertical */
         gap: 1.5rem;
-        /* GAP ADDED */
-        padding: 0 5vw;
-        /* Desktop padding */
+        padding: 0 var(--page-padding);
         height: 85vh;
-        /* Increased height to give footer space */
         min-height: 600px;
-        /* Ensure content fits on short screens */
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
     }
