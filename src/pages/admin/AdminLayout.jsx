@@ -1,7 +1,6 @@
-import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import './admin.css'; // We'll create this
+import './admin.css';
 
 export default function AdminLayout() {
     const { logout } = useAuth();
@@ -21,10 +20,11 @@ export default function AdminLayout() {
             <aside className="admin-sidebar">
                 <div className="admin-logo">LRC Admin</div>
                 <nav className="admin-nav">
-                    <Link to="/admin" className="admin-link">Dashboard</Link>
-                    <Link to="/admin/testimonials" className="admin-link">Testimonials</Link>
-                    <Link to="/admin/events" className="admin-link">Events</Link>
-                    {/* Add more links here later */}
+                    <NavLink to="/admin" end className={({ isActive }) => `admin-link${isActive ? " active" : ""}`}>Dashboard</NavLink>
+                    <NavLink to="/admin/races" className={({ isActive }) => `admin-link${isActive ? " active" : ""}`}>Races</NavLink>
+                    <NavLink to="/admin/attendance" className={({ isActive }) => `admin-link${isActive ? " active" : ""}`}>Attendance</NavLink>
+                    <NavLink to="/admin/events" className={({ isActive }) => `admin-link${isActive ? " active" : ""}`}>Events</NavLink>
+                    <NavLink to="/admin/testimonials" className={({ isActive }) => `admin-link${isActive ? " active" : ""}`}>Testimonials</NavLink>
                 </nav>
                 <button onClick={handleLogout} className="admin-logout">Log Out</button>
             </aside>
