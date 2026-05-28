@@ -25,13 +25,15 @@ import {
   writeBatch,
 } from "firebase/firestore";
 
+import 'dotenv/config';
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCFpPzG7J8SNhwHLXu5bhF86NU-3uV9Y_I",
-  authDomain: "latin-run-club.firebaseapp.com",
-  projectId: "latin-run-club",
-  storageBucket: "latin-run-club.firebasestorage.app",
-  messagingSenderId: "864519474612",
-  appId: "1:864519474612:web:e9ad8299184c332e2bf6e1",
+  apiKey: process.env.VITE_FIREBASE_API_KEY,
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VITE_FIREBASE_APP_ID,
 };
 
 const DEMO_EMAIL = "demo@latinrunclub.com";

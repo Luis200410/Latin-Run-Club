@@ -33,7 +33,15 @@ export default function SignIn() {
       await login(email, password);
       navigate("/dashboard");
     } catch (err) {
-      setError("Failed to sign in: " + err.message);
+      if (
+        err.code === "auth/invalid-credential" ||
+        err.code === "auth/user-not-found" ||
+        err.code === "auth/wrong-password"
+      ) {
+        setError("Invalid email or password. Please try again.");
+      } else {
+        setError("Failed to sign in: " + err.message);
+      }
     }
     setLoading(false);
   };

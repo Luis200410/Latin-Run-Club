@@ -20,19 +20,19 @@ import {
 //    and use mock user data for viewing dashboard pages.
 //    Set back to false when ready to use real auth.
 // ──────────────────────────────────────────────────────
-const DEV_BYPASS_AUTH = true;
+const DEV_BYPASS_AUTH = false;
 
 const MOCK_USER = {
   uid: "dev-mock-user-001",
-  email: "carlos@latinrunclub.com",
-  displayName: "Carlos Infante",
+  email: "test@example.com",
+  displayName: "Test User",
   photoURL: "",
 };
 
 const MOCK_PROFILE = {
-  firstName: "Carlos",
-  lastName: "Infante",
-  email: "carlos@latinrunclub.com",
+  firstName: "Test",
+  lastName: "User",
+  email: "test@example.com",
   city: "new_york",
   photoURL: "",
   runsAttended: 12,
@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
   );
   const [loading, setLoading] = useState(DEV_BYPASS_AUTH ? false : true);
 
-  async function signup(email, password, name, city) {
+  async function signup(email, password, name, city, runningLevel) {
     if (DEV_BYPASS_AUTH) return { user: MOCK_USER };
 
     const userCredential = await createUserWithEmailAndPassword(
@@ -79,6 +79,7 @@ export function AuthProvider({ children }) {
       email,
       city: city || "new_york",
       photoURL: "",
+      runningLevel: runningLevel || 50,
     });
 
     // Fetch the profile we just created
@@ -96,13 +97,15 @@ export function AuthProvider({ children }) {
   function logout() {
     if (DEV_BYPASS_AUTH) {
       console.log("[DEV] Logout bypassed in dev mode");
+      setCurrentUser(null);
+      setUserProfile(null);
       return Promise.resolve();
     }
     setUserProfile(null);
     return signOut(auth);
   }
 
-  async function googleSignIn() {
+  async function googleSignIn(city, runningLevel) {
     if (DEV_BYPASS_AUTH) return { user: MOCK_USER };
 
     const provider = new GoogleAuthProvider();
@@ -116,8 +119,9 @@ export function AuthProvider({ children }) {
         firstName: nameParts[0] || "",
         lastName: nameParts.slice(1).join(" ") || "",
         email: result.user.email || "",
-        city: "new_york",
+        city: city || "new_york",
         photoURL: result.user.photoURL || "",
+        runningLevel: runningLevel !== undefined ? runningLevel : 50,
       });
       profile = await getUserProfile(result.user.uid);
     }

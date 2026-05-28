@@ -25,7 +25,7 @@ import { db } from "../firebase/config";
 // 🚧 DEV BYPASS: Must match the flag in AuthContext.jsx
 //    When true, returns mock data instantly without Firestore.
 // ──────────────────────────────────────────────────────
-const DEV_BYPASS_AUTH = true;
+const DEV_BYPASS_AUTH = false;
 
 // ─── Mock Data ───────────────────────────────────────────────
 
@@ -269,8 +269,8 @@ const MOCK_FEED = [
 // Mock user entry for leaderboard (matches MOCK_PROFILE in AuthContext)
 const MOCK_CURRENT_USER_ENTRY = {
   id: "dev-mock-user-001",
-  firstName: "Carlos",
-  lastName: "Infante",
+  firstName: "Test",
+  lastName: "User",
   city: "new_york",
   photoURL: "",
   totalPoints: 20,
@@ -295,6 +295,7 @@ export async function createUserProfile(uid, data) {
       email: data.email || "",
       city: data.city || "new_york",
       photoURL: data.photoURL || "",
+      runningLevel: data.runningLevel || 50,
       joinedAt: serverTimestamp(),
       stravaConnected: false,
       stravaAthleteId: null,
