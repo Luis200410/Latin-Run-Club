@@ -25,6 +25,7 @@ const EMPTY_FORM = {
   city: "new_york",
   location: "",
   date: "",
+  time: "",
   url: "",
   pointValue: 0,
 };
@@ -70,6 +71,7 @@ export default function RaceManager() {
       city: race.city || "new_york",
       location: race.location || "",
       date: dateStr,
+      time: race.time || "",
       url: race.url || "",
       pointValue: race.pointValue || 0,
     });
@@ -96,6 +98,7 @@ export default function RaceManager() {
         city: form.city,
         location: form.location.trim(),
         date: Timestamp.fromDate(dateObj),
+        time: form.time.trim(),
         url: form.url.trim(),
         pointValue: Number(form.pointValue) || 0,
       };
@@ -201,6 +204,15 @@ export default function RaceManager() {
               />
             </div>
             <div className="admin-form-group">
+              <label>Start Time</label>
+              <input
+                type="text"
+                value={form.time}
+                onChange={(e) => setForm((p) => ({ ...p, time: e.target.value }))}
+                placeholder="e.g. 7:00 AM"
+              />
+            </div>
+            <div className="admin-form-group">
               <label>
                 <Trophy size={13} style={{ display: "inline", marginRight: 4 }} />
                 Point Value
@@ -249,7 +261,7 @@ export default function RaceManager() {
                 <th>Name</th>
                 <th>Distance</th>
                 <th>City</th>
-                <th>Date</th>
+                <th>Date &amp; Time</th>
                 <th>Participants</th>
                 <th>Points</th>
                 <th>Actions</th>
@@ -265,6 +277,7 @@ export default function RaceManager() {
                     {race.date?.toDate
                       ? race.date.toDate().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
                       : "—"}
+                    {race.time && <span style={{ display: "block", fontSize: 11, color: "#999", marginTop: 2 }}>{race.time}</span>}
                   </td>
                   <td>{race.participants?.length || 0}</td>
                   <td>

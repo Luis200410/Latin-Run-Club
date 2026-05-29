@@ -696,3 +696,27 @@ export function subscribeToActivityFeed(cityId, callback, feedLimit = 15) {
     callback(items);
   });
 }
+
+// ─── Admin User Management ───────────────────────────────────
+
+export async function getAllUsers() {
+  if (DEV_BYPASS_AUTH) {
+    return [...MOCK_MEMBERS, MOCK_CURRENT_USER_ENTRY];
+  }
+  const snap = await getDocs(collection(db, "users"));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+export async function updateUserAdminStatus(uid, isAdmin) {
+  if (DEV_BYPASS_AUTH) {
+    const user =
+      uid === MOCK_CURRENT_USER_ENTRY.id
+        ? MOCK_CURRENT_USER_ENTRY
+        : MOCK_MEMBERS.find((m) => m.id === uid);
+    if (user) {
+      user.isAdmin = isAdmin;
+    }
+    return;
+  }
+  await updateDoc(doc(db, "users", uid), { isAdmin });
+}

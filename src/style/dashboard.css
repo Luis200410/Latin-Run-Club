@@ -791,6 +791,7 @@
   gap: 20px;
 }
 
+/* ── Legacy race-card (keep for any pages still using it) */
 .race-card {
   background: var(--lrc-card-bg);
   border-radius: var(--lrc-radius-lg);
@@ -807,6 +808,210 @@
   box-shadow: var(--lrc-shadow-lg);
 }
 
+/* ── New v2 race card */
+.race-card-v2 {
+  background: var(--lrc-card-bg);
+  border-radius: var(--lrc-radius-lg);
+  border: 1px solid var(--lrc-border);
+  box-shadow: var(--lrc-shadow-sm);
+  overflow: hidden;
+  transition:
+    transform var(--lrc-transition),
+    box-shadow var(--lrc-transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.race-card-v2:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--lrc-shadow-lg);
+}
+
+.race-card-accent {
+  height: 5px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.race-card-body {
+  padding: 20px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Header row */
+.race-card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.race-distance-badge-v2 {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.race-card-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.race-points-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--lrc-orange-light);
+  color: var(--lrc-orange);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.race-card-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lrc-text-muted);
+}
+
+/* Race name */
+.race-name-v2 {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--lrc-text-primary);
+  margin: 0 0 10px;
+  line-height: 1.3;
+}
+
+/* Meta info */
+.race-meta-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--lrc-text-secondary);
+  margin-bottom: 14px;
+}
+
+.race-meta-v2 span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Participants row */
+.race-participants-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.race-avatar-stack {
+  display: flex;
+}
+
+.race-avatar-wrapper {
+  position: relative;
+}
+
+.race-participant-label {
+  font-size: 12px;
+  color: var(--lrc-text-muted);
+  font-weight: 500;
+}
+
+.race-visitor-note {
+  color: var(--lrc-purple);
+  font-weight: 600;
+}
+
+/* Divider */
+.race-card-divider {
+  height: 1px;
+  background: var(--lrc-border);
+  margin-bottom: 16px;
+}
+
+/* Bottom actions */
+.race-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.race-join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border: 2px solid var(--lrc-orange);
+  background: transparent;
+  color: var(--lrc-orange);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.race-join-btn:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.race-join-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.race-join-active {
+  background: var(--lrc-orange) !important;
+  color: white !important;
+  border-color: var(--lrc-orange) !important;
+}
+
+.race-card-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.race-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--lrc-teal);
+  font-weight: 600;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.race-link-btn:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+/* Legacy badges still used in some places */
 .race-card-header {
   display: flex;
   align-items: flex-start;
@@ -845,20 +1050,11 @@
   gap: 5px;
 }
 
-.race-meta svg {
-  width: 14px;
-  height: 14px;
-}
-
 .race-participants {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
-}
-
-.race-avatar-stack {
-  display: flex;
 }
 
 .race-avatar-stack .member-avatar {
@@ -923,6 +1119,8 @@
   text-decoration: underline;
 }
 
+
+
 /* ─── Filter Bar ─────────────────────────────────────────── */
 .filter-bar {
   display: flex;
@@ -952,6 +1150,55 @@
   outline: none;
   border-color: var(--lrc-teal);
   box-shadow: 0 0 0 3px var(--lrc-teal-light);
+}
+
+/* ─── Filter Chips (New Style) ───────────────────────────── */
+.filter-chips-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.filter-chips-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+.filter-chips-bar::-webkit-scrollbar {
+  display: none; /* hide scrollbar for chips */
+}
+
+.filter-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--lrc-white);
+  border: 1px solid var(--lrc-border);
+  color: var(--lrc-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--lrc-transition);
+}
+
+.filter-chip:hover {
+  background: var(--lrc-bg);
+  color: var(--lrc-text-primary);
+}
+
+.filter-chip.active {
+  background: var(--lrc-teal-light);
+  color: var(--lrc-teal);
+  border-color: var(--lrc-teal);
+  font-weight: 600;
 }
 
 /* ─── City Cards (Explore) ───────────────────────────────── */
@@ -2401,3 +2648,85 @@
   max-width: 200px;
   justify-content: center;
 }
+
+/* ─── QR Modal Tabs ──────────────────────────────────────── */
+.qr-modal-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--lrc-bg);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+}
+
+.qr-modal-tab {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--lrc-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qr-modal-tab.active {
+  background: var(--lrc-white);
+  color: var(--lrc-teal);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ─── QR Scan Results ────────────────────────────────────── */
+.qr-scan-result {
+  padding: 20px 16px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.qr-scan-success {
+  background: var(--lrc-teal-light);
+  border: 1px solid rgba(0, 151, 178, 0.25);
+}
+
+.qr-scan-warning {
+  background: var(--lrc-orange-light);
+  border: 1px solid rgba(237, 113, 20, 0.25);
+}
+
+.qr-scan-error {
+  background: var(--lrc-pink-light);
+  border: 1px solid rgba(213, 45, 93, 0.2);
+}
+
+/* ─── Mobile Race Card Actions Stack ─────────────────────── */
+@media (max-width: 400px) {
+  .race-card-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .race-card-links {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .race-join-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ─── Filter chip touch targets ─────────────────────────── */
+.filter-chip {
+  min-height: 44px;
+  padding: 10px 18px;
+}
+

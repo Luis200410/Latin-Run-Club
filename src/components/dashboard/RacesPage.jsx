@@ -9,10 +9,12 @@ import {
   Trophy,
   Calendar,
   MapPin,
+  Clock,
   ExternalLink,
   CheckCircle,
   ChevronRight,
   Globe,
+  Star,
 } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
@@ -51,28 +53,41 @@ const CITY_LABELS = {
   london: "LON",
 };
 
+// Distance-based gradient accents
+const DISTANCE_COLORS = {
+  "5K":            { gradient: "linear-gradient(135deg, var(--lrc-teal), #0d9488)",    badge: "var(--lrc-teal-light)",   text: "var(--lrc-teal)"   },
+  "10K":           { gradient: "linear-gradient(135deg, var(--lrc-orange), #ea580c)",  badge: "var(--lrc-orange-light)", text: "var(--lrc-orange)" },
+  "Half Marathon": { gradient: "linear-gradient(135deg, var(--lrc-purple), #7c3aed)",  badge: "var(--lrc-purple-light)", text: "var(--lrc-purple)" },
+  "Marathon":      { gradient: "linear-gradient(135deg, var(--lrc-pink), #be185d)",    badge: "var(--lrc-pink-light)",   text: "var(--lrc-pink)"   },
+  "Ultra":         { gradient: "linear-gradient(135deg, var(--lrc-olive), #4d7c0f)",   badge: "var(--lrc-olive-light)",  text: "var(--lrc-olive)"  },
+};
+
+function getDistanceColors(distance) {
+  return DISTANCE_COLORS[distance] || DISTANCE_COLORS["5K"];
+}
+
 export default function RacesPage() {
   const { currentUser, userProfile } = useAuth();
   const navigate = useNavigate();
-  const [races, setRaces] = useState([]);
+  const [allRaces, setAllRaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterCity, setFilterCity] = useState("");
   const [filterDistance, setFilterDistance] = useState("All");
   const [toggleLoading, setToggleLoading] = useState({});
 
+  // Load ALL races once — filter client-side to avoid composite index issues
   useEffect(() => {
     loadRaces();
-  }, [filterCity]);
+  }, []);
 
   async function loadRaces() {
     setLoading(true);
     try {
-      const filters = {};
-      if (filterCity) filters.city = filterCity;
-      const data = await getRaces(filters);
-      setRaces(data);
+      const data = await getRaces();
+      setAllRaces(data);
     } catch (err) {
       console.error("Races load error:", err);
+      toast.error("Couldn't load races. Try again.");
     } finally {
       setLoading(false);
     }
@@ -85,7 +100,7 @@ export default function RacesPage() {
       try {
         const homeCity = userProfile?.city || "new_york";
         const added = await toggleRaceParticipation(raceId, currentUser.uid, homeCity);
-        setRaces((prev) =>
+        setAllRaces((prev) =>
           prev.map((r) => {
             if (r.id !== raceId) return r;
             const participants = r.participants || [];
@@ -115,10 +130,11 @@ export default function RacesPage() {
     [currentUser, userProfile, toggleLoading],
   );
 
-  // Client-side distance filter
-  const filteredRaces = races.filter((r) => {
-    if (filterDistance === "All") return true;
-    return r.distance === filterDistance;
+  // Client-side filtering for both city and distance
+  const filteredRaces = allRaces.filter((r) => {
+    if (filterCity && r.city !== filterCity) return false;
+    if (filterDistance !== "All" && r.distance !== filterDistance) return false;
+    return true;
   });
 
   if (loading) {
@@ -130,7 +146,7 @@ export default function RacesPage() {
             <div
               className="skeleton skeleton-card"
               key={i}
-              style={{ height: 220 }}
+              style={{ height: 280 }}
             ></div>
           ))}
         </div>
@@ -150,7 +166,7 @@ export default function RacesPage() {
             color: "var(--lrc-orange)",
           }}
         />
-        Races & Events
+        Races &amp; Events
       </h1>
       <p className="page-subtitle">
         Find upcoming races, see who from the club is running, and sign up
@@ -158,30 +174,29 @@ export default function RacesPage() {
       </p>
 
       {/* Filters */}
-      <div className="filter-bar">
-        <select
-          className="filter-select"
-          value={filterCity}
-          onChange={(e) => setFilterCity(e.target.value)}
-        >
+      <div className="filter-chips-container">
+        <div className="filter-chips-bar">
           {CITY_OPTIONS.map((c) => (
-            <option key={c.value} value={c.value}>
+            <button
+              key={c.value}
+              className={`filter-chip ${filterCity === c.value ? "active" : ""}`}
+              onClick={() => setFilterCity(c.value)}
+            >
               {c.label}
-            </option>
+            </button>
           ))}
-        </select>
-
-        <select
-          className="filter-select"
-          value={filterDistance}
-          onChange={(e) => setFilterDistance(e.target.value)}
-        >
+        </div>
+        <div className="filter-chips-bar">
           {DISTANCE_OPTIONS.map((d) => (
-            <option key={d} value={d}>
+            <button
+              key={d}
+              className={`filter-chip ${filterDistance === d ? "active" : ""}`}
+              onClick={() => setFilterDistance(d)}
+            >
               {d}
-            </option>
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       {/* Race Cards */}
@@ -191,8 +206,19 @@ export default function RacesPage() {
             <div className="empty-state-emoji">🏅</div>
             <h3>No races found</h3>
             <p>
-              Try adjusting your filters, or check back soon for new events!
+              {filterCity || filterDistance !== "All"
+                ? "Try clearing your filters — there may be races in other cities!"
+                : "No races scheduled yet. Check back soon!"}
             </p>
+            {(filterCity || filterDistance !== "All") && (
+              <button
+                className="btn-secondary"
+                style={{ marginTop: 12 }}
+                onClick={() => { setFilterCity(""); setFilterDistance("All"); }}
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
         </div>
       ) : (
@@ -201,109 +227,142 @@ export default function RacesPage() {
             const isRunning = race.participants?.includes(currentUser?.uid);
             const raceDate = race.date?.toDate?.();
             const participantCount = race.participants?.length || 0;
+            const colors = getDistanceColors(race.distance);
+            const pointValue = race.pointValue || 0;
 
             return (
-              <div className="race-card" key={race.id}>
-                <div className="race-card-header">
-                  <div>
-                    <span className="race-distance-badge">
+              <div className="race-card-v2" key={race.id}>
+                {/* Gradient accent top strip */}
+                <div
+                  className="race-card-accent"
+                  style={{ background: colors.gradient }}
+                />
+
+                {/* Card body */}
+                <div className="race-card-body">
+                  {/* Header row: distance badge + date */}
+                  <div className="race-card-header-row">
+                    <span
+                      className="race-distance-badge-v2"
+                      style={{ background: colors.badge, color: colors.text }}
+                    >
                       {race.distance || "Race"}
                     </span>
-                  </div>
-                  {raceDate && (
-                    <span
-                      style={{ fontSize: 13, color: "var(--lrc-text-muted)" }}
-                    >
-                      {format(raceDate, "MMM d, yyyy")}
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="race-name">{race.name}</h3>
-
-                <div className="race-meta">
-                  {raceDate && (
-                    <span>
-                      <Calendar size={14} /> {format(raceDate, "EEEE, MMM d")}
-                    </span>
-                  )}
-                  {race.location && (
-                    <span>
-                      <MapPin size={14} /> {race.location}
-                    </span>
-                  )}
-                </div>
-
-                {/* Participant avatars with visitor badges */}
-                {participantCount > 0 && (
-                  <div className="race-participants">
-                    <div className="race-avatar-stack">
-                      {race.participants.slice(0, 4).map((uid, i) => {
-                        const homeCity = race.participantCities?.[uid];
-                        const isVisitor = homeCity && homeCity !== race.city;
-                        return (
-                          <div key={uid} className="race-avatar-wrapper">
-                            <div
-                              className="member-avatar"
-                              style={{
-                                background: AVATAR_COLORS[i % AVATAR_COLORS.length],
-                              }}
-                            >
-                              🏃
-                            </div>
-                            {isVisitor && (
-                              <span className="race-visitor-badge">
-                                {CITY_LABELS[homeCity] || "?"}
-                              </span>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                      <span className="race-participant-count">
-                        {participantCount}{" "}
-                        {participantCount === 1 ? "runner" : "runners"} from LRC
-                      </span>
-                      {Object.values(race.participantCities || {}).some(
-                        (c) => c !== race.city,
-                      ) && (
-                        <span className="race-visitor-note">
-                          <Globe size={11} /> Visitors from other cities
+                    <div className="race-card-header-right">
+                      {pointValue > 0 && (
+                        <span className="race-points-badge">
+                          <Star size={11} />
+                          {pointValue} pts
+                        </span>
+                      )}
+                      {raceDate && (
+                        <span className="race-card-date">
+                          {format(raceDate, "MMM d")}
                         </span>
                       )}
                     </div>
                   </div>
-                )}
 
-                <div className="race-bottom">
-                  <button
-                    className={`race-running-btn ${isRunning ? "race-active" : ""}`}
-                    onClick={() => handleToggle(race.id)}
-                    disabled={toggleLoading[race.id]}
-                  >
-                    <CheckCircle size={14} />
-                    {isRunning ? "I'm running! ✓" : "I'm running this!"}
-                  </button>
+                  {/* Race name */}
+                  <h3 className="race-name-v2">{race.name}</h3>
 
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    {race.url && (
-                      <a
-                        href={race.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="race-link"
-                      >
-                        Register <ExternalLink size={12} />
-                      </a>
+                  {/* Meta info */}
+                  <div className="race-meta-v2">
+                    {raceDate && (
+                      <span>
+                        <Calendar size={13} />
+                        {format(raceDate, "EEEE, MMMM d, yyyy")}
+                      </span>
                     )}
+                    {race.location && (
+                      <span>
+                        <MapPin size={13} />
+                        {race.location}
+                      </span>
+                    )}
+                    {race.time && (
+                      <span>
+                        <Clock size={13} />
+                        {race.time}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Participant avatars */}
+                  {participantCount > 0 && (
+                    <div className="race-participants-row">
+                      <div className="race-avatar-stack">
+                        {race.participants.slice(0, 5).map((uid, i) => {
+                          const homeCity = race.participantCities?.[uid];
+                          const isVisitor = homeCity && homeCity !== race.city;
+                          return (
+                            <div key={uid} className="race-avatar-wrapper">
+                              <div
+                                className="member-avatar"
+                                style={{
+                                  background: AVATAR_COLORS[i % AVATAR_COLORS.length],
+                                  width: 28,
+                                  height: 28,
+                                  fontSize: 11,
+                                  border: "2px solid white",
+                                  marginLeft: i > 0 ? -8 : 0,
+                                }}
+                              >
+                                🏃
+                              </div>
+                              {isVisitor && (
+                                <span className="race-visitor-badge">
+                                  {CITY_LABELS[homeCity] || "?"}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <span className="race-participant-label">
+                        {participantCount} {participantCount === 1 ? "runner" : "runners"} from LRC
+                        {Object.values(race.participantCities || {}).some((c) => c !== race.city) && (
+                          <span className="race-visitor-note">
+                            {" "}· <Globe size={10} style={{ display: "inline", verticalAlign: "middle" }} /> cross-city
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Divider */}
+                  <div className="race-card-divider" />
+
+                  {/* Bottom actions */}
+                  <div className="race-card-actions">
                     <button
-                      className="race-link"
-                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit" }}
-                      onClick={() => navigate(`/dashboard/race/${race.id}`)}
+                      className={`race-join-btn ${isRunning ? "race-join-active" : ""}`}
+                      style={isRunning ? {} : { borderColor: colors.text, color: colors.text }}
+                      onClick={() => handleToggle(race.id)}
+                      disabled={toggleLoading[race.id]}
                     >
-                      Details <ChevronRight size={12} />
+                      <CheckCircle size={14} />
+                      {isRunning ? "Running ✓" : "I'm running this!"}
                     </button>
+
+                    <div className="race-card-links">
+                      {race.url && (
+                        <a
+                          href={race.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="race-link-btn"
+                        >
+                          Register <ExternalLink size={11} />
+                        </a>
+                      )}
+                      <button
+                        className="race-link-btn"
+                        onClick={() => navigate(`/dashboard/race/${race.id}`)}
+                      >
+                        Details <ChevronRight size={11} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

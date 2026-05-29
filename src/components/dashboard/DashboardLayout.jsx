@@ -1,18 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import {
+  confirmRaceAttendance,
+  getRace,
+} from "../../services/firestoreService";
+import { Html5QrcodeScanner } from "html5-qrcode";
 import {
   Home,
   MapPin,
   Globe,
   Trophy,
   User,
+  Shield,
   LogOut,
   Award,
   Menu,
   QrCode,
+  Scan,
   X,
   Download,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import QRCode from "react-qr-code";
 import "../../style/dashboard.css";
@@ -68,6 +77,11 @@ export default function DashboardLayout() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [qrModalTab, setQrModalTab] = useState("show"); // "show" | "scan"
+  const [scanning, setScanning] = useState(false);
+  const [scanResult, setScanResult] = useState(null); // { status: "success"|"error"|"duplicate", raceName, points }
+  const scannerRef = useRef(null);
+  const scannerInstanceRef = useRef(null);
 
   const firstName =
     userProfile?.firstName ||
@@ -89,6 +103,83 @@ export default function DashboardLayout() {
       document.body.style.overflow = "";
     };
   }, [drawerOpen]);
+
+  // Start/stop scanner based on tab and modal state
+  useEffect(() => {
+    if (qrModalOpen && qrModalTab === "scan" && scanning) {
+      startScanner();
+    } else {
+      stopScanner();
+    }
+    return () => stopScanner();
+  }, [qrModalOpen, qrModalTab, scanning]);
+
+  function startScanner() {
+    if (scannerInstanceRef.current || !scannerRef.current) return;
+    const scanner = new Html5QrcodeScanner(
+      "runner-qr-reader",
+      { fps: 10, qrbox: { width: 240, height: 240 } },
+      false,
+    );
+    scanner.render(onScanSuccess, () => {});
+    scannerInstanceRef.current = scanner;
+  }
+
+  function stopScanner() {
+    if (scannerInstanceRef.current) {
+      scannerInstanceRef.current.clear().catch(() => {});
+      scannerInstanceRef.current = null;
+    }
+  }
+
+  async function onScanSuccess(decodedText) {
+    stopScanner();
+    setScanning(false);
+    setScanResult({ status: "loading", raceName: "", points: 0 });
+
+    try {
+      // Extract raceId from URL like https://host/race/:raceId/confirm
+      let raceId = null;
+      try {
+        const url = new URL(decodedText.trim());
+        const match = url.pathname.match(/\/race\/([^/]+)\/confirm/);
+        if (match) raceId = match[1];
+      } catch {
+        // Not a URL — not a valid race QR
+      }
+
+      if (!raceId) {
+        setScanResult({ status: "error", message: "This doesn't look like a race QR code." });
+        return;
+      }
+
+      const race = await getRace(raceId);
+      if (!race) {
+        setScanResult({ status: "error", message: "Race not found. It may have been removed." });
+        return;
+      }
+
+      // Check for duplicate
+      if ((race.confirmedAttendees || []).includes(currentUser.uid)) {
+        setScanResult({ status: "duplicate", raceName: race.name, points: race.pointValue || 0 });
+        return;
+      }
+
+      await confirmRaceAttendance(raceId, currentUser.uid);
+      setScanResult({ status: "success", raceName: race.name, points: race.pointValue || 0 });
+    } catch (err) {
+      console.error("Scan error:", err);
+      setScanResult({ status: "error", message: "Something went wrong. Please try again." });
+    }
+  }
+
+  function closeQrModal() {
+    setQrModalOpen(false);
+    setQrModalTab("show");
+    setScanning(false);
+    setScanResult(null);
+    stopScanner();
+  }
 
   const handleLogout = async () => {
     try {
@@ -172,6 +263,17 @@ export default function DashboardLayout() {
               {label}
             </NavLink>
           ))}
+          {userProfile?.isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `sidebar-nav-link ${isActive ? "active" : ""}`
+              }
+            >
+              <Shield size={20} />
+              Admin Settings
+            </NavLink>
+          )}
         </nav>
 
         <div className="sidebar-footer">
@@ -232,6 +334,18 @@ export default function DashboardLayout() {
               {label}
             </NavLink>
           ))}
+          {userProfile?.isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `mobile-drawer-link${isActive ? " active" : ""}`
+              }
+              onClick={() => setDrawerOpen(false)}
+            >
+              <Shield size={20} />
+              Admin Settings
+            </NavLink>
+          )}
         </nav>
 
         <div className="mobile-drawer-footer">
@@ -285,7 +399,7 @@ export default function DashboardLayout() {
           {/* Center QR button */}
           <button
             className="mobile-nav-qr-btn"
-            onClick={() => setQrModalOpen(true)}
+            onClick={() => { setQrModalOpen(true); setQrModalTab("show"); setScanResult(null); }}
             aria-label="Show my QR code"
           >
             <QrCode size={26} />
@@ -311,7 +425,7 @@ export default function DashboardLayout() {
       {qrModalOpen && (
         <div
           className="qr-fullscreen-overlay"
-          onClick={() => setQrModalOpen(false)}
+          onClick={closeQrModal}
         >
           <div
             className="qr-fullscreen-card"
@@ -319,28 +433,176 @@ export default function DashboardLayout() {
           >
             <button
               className="qr-fullscreen-close"
-              onClick={() => setQrModalOpen(false)}
+              onClick={closeQrModal}
               aria-label="Close"
             >
               <X size={20} />
             </button>
-            <h2 className="qr-fullscreen-title">My QR Code</h2>
-            <p className="qr-fullscreen-subtitle">
-              Show this at races so the admin can confirm your attendance.
-            </p>
-            <div className="qr-fullscreen-code">
-              <QRCode
-                id="layout-qr-code"
-                value={currentUser?.uid || "unknown"}
-                size={240}
-              />
+
+            {/* Tabs */}
+            <div className="qr-modal-tabs">
+              <button
+                className={`qr-modal-tab ${qrModalTab === "show" ? "active" : ""}`}
+                onClick={() => { setQrModalTab("show"); setScanning(false); setScanResult(null); }}
+              >
+                <QrCode size={15} /> My QR
+              </button>
+              <button
+                className={`qr-modal-tab ${qrModalTab === "scan" ? "active" : ""}`}
+                onClick={() => { setQrModalTab("scan"); setScanResult(null); }}
+              >
+                <Scan size={15} /> Scan Race
+              </button>
+              {userProfile?.isAdmin && (
+                <button
+                  className={`qr-modal-tab ${qrModalTab === "admin" ? "active" : ""}`}
+                  onClick={() => { setQrModalTab("admin"); setScanning(false); setScanResult(null); }}
+                  style={{ color: qrModalTab === "admin" ? "var(--lrc-purple)" : "var(--lrc-text-secondary)" }}
+                >
+                  <Shield size={15} /> Admin Hub
+                </button>
+              )}
             </div>
-            <button
-              className="btn-primary qr-fullscreen-download"
-              onClick={handleDownloadQR}
-            >
-              <Download size={16} /> Download QR
-            </button>
+
+            {/* Show My QR Tab */}
+            {qrModalTab === "show" && (
+              <>
+                <h2 className="qr-fullscreen-title">My QR Code</h2>
+                <p className="qr-fullscreen-subtitle">
+                  Show this at races so the admin can confirm your attendance.
+                </p>
+                <div className="qr-fullscreen-code">
+                  <QRCode
+                    id="layout-qr-code"
+                    value={currentUser?.uid || "unknown"}
+                    size={240}
+                  />
+                </div>
+                <button
+                  className="btn-primary qr-fullscreen-download"
+                  onClick={handleDownloadQR}
+                >
+                  <Download size={16} /> Download QR
+                </button>
+              </>
+            )}
+
+            {/* Scan Race QR Tab */}
+            {qrModalTab === "scan" && (
+              <div style={{ width: "100%", textAlign: "center" }}>
+                <h2 className="qr-fullscreen-title">Scan Race QR</h2>
+                <p className="qr-fullscreen-subtitle">
+                  Point your camera at the race QR code the admin is showing to check in and earn points.
+                </p>
+
+                {/* Scan result states */}
+                {scanResult?.status === "success" && (
+                  <div className="qr-scan-result qr-scan-success">
+                    <CheckCircle size={40} style={{ color: "var(--lrc-teal)", margin: "0 auto 12px", display: "block" }} />
+                    <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 6 }}>You're Confirmed! 🎉</div>
+                    <div style={{ fontSize: 14, color: "var(--lrc-text-secondary)", marginBottom: 4 }}>{scanResult.raceName}</div>
+                    {scanResult.points > 0 && (
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "var(--lrc-orange)" }}>+{scanResult.points} points earned!</div>
+                    )}
+                    <button
+                      className="btn-secondary"
+                      style={{ marginTop: 16 }}
+                      onClick={() => { setScanResult(null); }}
+                    >
+                      Scan Another
+                    </button>
+                  </div>
+                )}
+
+                {scanResult?.status === "duplicate" && (
+                  <div className="qr-scan-result qr-scan-warning">
+                    <CheckCircle size={40} style={{ color: "var(--lrc-orange)", margin: "0 auto 12px", display: "block" }} />
+                    <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 6 }}>Already Confirmed!</div>
+                    <div style={{ fontSize: 14, color: "var(--lrc-text-secondary)" }}>You're already checked in to {scanResult.raceName}. No duplicate points awarded.</div>
+                    <button
+                      className="btn-secondary"
+                      style={{ marginTop: 16 }}
+                      onClick={() => { setScanResult(null); }}
+                    >
+                      OK
+                    </button>
+                  </div>
+                )}
+
+                {scanResult?.status === "error" && (
+                  <div className="qr-scan-result qr-scan-error">
+                    <XCircle size={40} style={{ color: "var(--lrc-pink)", margin: "0 auto 12px", display: "block" }} />
+                    <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 6 }}>Couldn't Scan</div>
+                    <div style={{ fontSize: 14, color: "var(--lrc-text-secondary)" }}>{scanResult.message}</div>
+                    <button
+                      className="btn-secondary"
+                      style={{ marginTop: 16 }}
+                      onClick={() => { setScanResult(null); }}
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                )}
+
+                {scanResult?.status === "loading" && (
+                  <div style={{ padding: "24px 0", color: "var(--lrc-text-secondary)", fontSize: 14 }}>Confirming attendance...</div>
+                )}
+
+                {/* Camera scanner */}
+                {!scanResult && !scanning && (
+                  <button
+                    className="btn-primary"
+                    style={{ marginTop: 8, fontSize: 15, padding: "12px 28px" }}
+                    onClick={() => setScanning(true)}
+                  >
+                    <Scan size={18} /> Start Camera
+                  </button>
+                )}
+
+                {!scanResult && scanning && (
+                  <>
+                    <div
+                      id="runner-qr-reader"
+                      ref={scannerRef}
+                      style={{ margin: "12px auto 0", maxWidth: 300 }}
+                    />
+                    <button
+                      className="btn-secondary"
+                      style={{ marginTop: 12 }}
+                      onClick={() => { setScanning(false); stopScanner(); }}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Admin Hub Tab */}
+            {qrModalTab === "admin" && userProfile?.isAdmin && (
+              <div style={{ width: "100%", textAlign: "center", paddingBottom: "20px" }}>
+                <h2 className="qr-fullscreen-title">Admin Hub</h2>
+                <p className="qr-fullscreen-subtitle">
+                  Quick access to race management and scanning runners.
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "24px" }}>
+                  <button 
+                    className="btn-primary" 
+                    style={{ padding: "14px", fontSize: "15px", display: "flex", justifyContent: "center", gap: "8px" }}
+                    onClick={() => { closeQrModal(); navigate('/admin/attendance'); }}
+                  >
+                    <Scan size={20} /> Scan Runners
+                  </button>
+                  <button 
+                    className="btn-secondary" 
+                    style={{ padding: "14px", fontSize: "15px", display: "flex", justifyContent: "center", gap: "8px" }}
+                    onClick={() => { closeQrModal(); navigate('/admin/races'); }}
+                  >
+                    <Trophy size={20} /> Create New Race
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

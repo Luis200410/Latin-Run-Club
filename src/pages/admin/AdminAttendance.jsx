@@ -23,6 +23,8 @@ export default function AdminAttendance() {
   const [selectedRace, setSelectedRace] = useState(null);
   const [tab, setTab] = useState("scan");
   const [attendees, setAttendees] = useState([]);
+  const [registeredParticipants, setRegisteredParticipants] = useState([]);
+  const [loadingRegistered, setLoadingRegistered] = useState(false);
   const [loadingRaces, setLoadingRaces] = useState(true);
   const [scanning, setScanning] = useState(false);
   const [lastScanned, setLastScanned] = useState(null);
@@ -53,6 +55,31 @@ export default function AdminAttendance() {
       setAttendees(data);
     });
     return unsub;
+  }, [selectedRace]);
+
+  useEffect(() => {
+    if (!selectedRace) {
+      setRegisteredParticipants([]);
+      return;
+    }
+    async function loadRegistered() {
+      setLoadingRegistered(true);
+      try {
+        const uids = selectedRace.participants || [];
+        const profiles = await Promise.all(
+          uids.map(async (uid) => {
+            const profile = await getUserProfile(uid);
+            return { id: uid, ...profile };
+          })
+        );
+        setRegisteredParticipants(profiles.filter((p) => p.firstName));
+      } catch (err) {
+        console.error("Failed to load registered", err);
+      } finally {
+        setLoadingRegistered(false);
+      }
+    }
+    loadRegistered();
   }, [selectedRace]);
 
   useEffect(() => {
@@ -252,6 +279,49 @@ export default function AdminAttendance() {
           {/* Confirmed List Tab */}
           {tab === "list" && (
             <div className="admin-form-card">
+              <h3 style={{ margin: "0 0 16px" }}>Registered (Not Checked In)</h3>
+              {loadingRegistered ? (
+                <p style={{ color: "#666", fontSize: 14 }}>Loading registered runners...</p>
+              ) : (
+                (() => {
+                  const unconfirmed = registeredParticipants.filter(
+                    (rp) => !attendees.find((a) => a.id === rp.id)
+                  );
+                  if (unconfirmed.length === 0) {
+                    return <p style={{ color: "#666", fontSize: 14, marginBottom: 24 }}>All registered runners are checked in!</p>;
+                  }
+                  return (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
+                      {unconfirmed.map((a) => (
+                        <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: "1px solid #f0f0f0" }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 600, fontSize: 14 }}>{a.firstName} {a.lastName}</div>
+                            <div style={{ fontSize: 12, color: "#888" }}>
+                              <MapPin size={11} style={{ display: "inline" }} /> {CITY_NAMES[a.city] || a.city}
+                              {a.runningLevel && ` · Level: ${a.runningLevel}`}
+                            </div>
+                          </div>
+                          <button
+                            className="admin-btn-secondary"
+                            style={{ padding: "6px 12px", fontSize: 12 }}
+                            onClick={async () => {
+                              try {
+                                await confirmRaceAttendance(selectedRace.id, a.id);
+                                toast.success(`✓ ${a.firstName} marked present`);
+                              } catch (e) {
+                                toast.error("Could not mark present");
+                              }
+                            }}
+                          >
+                            Mark Present
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()
+              )}
+
               <h3 style={{ margin: "0 0 16px" }}>Confirmed Attendees</h3>
               {attendees.length === 0 ? (
                 <p style={{ color: "#666", fontSize: 14 }}>No confirmed attendees yet.</p>
@@ -264,6 +334,7 @@ export default function AdminAttendance() {
                         <div style={{ fontWeight: 600, fontSize: 14 }}>{a.firstName} {a.lastName}</div>
                         <div style={{ fontSize: 12, color: "#888" }}>
                           <MapPin size={11} style={{ display: "inline" }} /> {CITY_NAMES[a.city] || a.city}
+                          {a.runningLevel && ` · Level: ${a.runningLevel}`}
                         </div>
                       </div>
                     </div>

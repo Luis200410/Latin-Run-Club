@@ -46,6 +46,19 @@ function getAvatarColor(name) {
   return AVATAR_COLORS[name.charCodeAt(0) % AVATAR_COLORS.length];
 }
 
+const RUNNING_LEVELS = [
+  { max: 20, label: "Novice", color: "var(--lrc-teal)" },
+  { max: 40, label: "Casual", color: "var(--lrc-olive)" },
+  { max: 60, label: "Active", color: "var(--lrc-orange)" },
+  { max: 80, label: "Advanced", color: "var(--lrc-purple)" },
+  { max: 100, label: "Elite", color: "var(--lrc-pink)" },
+];
+
+function getLevelInfo(levelValue) {
+  const value = typeof levelValue === "number" ? levelValue : Number(levelValue) || 50;
+  return RUNNING_LEVELS.find((l) => value <= l.max) || RUNNING_LEVELS[4];
+}
+
 function getInitials(firstName, lastName) {
   return ((firstName?.[0] || "") + (lastName?.[0] || "")).toUpperCase() || "?";
 }
@@ -62,6 +75,7 @@ export default function ProfilePage() {
     firstName: userProfile?.firstName || "",
     lastName: userProfile?.lastName || "",
     city: userProfile?.city || "new_york",
+    runningLevel: userProfile?.runningLevel || 50,
   });
 
   const [pastRuns, setPastRuns] = useState([]);
@@ -193,6 +207,7 @@ export default function ProfilePage() {
       firstName: userProfile?.firstName || "",
       lastName: userProfile?.lastName || "",
       city: userProfile?.city || "new_york",
+      runningLevel: userProfile?.runningLevel || 50,
     });
     setEditing(true);
   };
@@ -335,6 +350,20 @@ export default function ProfilePage() {
               />
               {cityLabel} • Member since {joinedDate}
             </p>
+            <div style={{ marginTop: 8 }}>
+              <span style={{ 
+                background: getLevelInfo(userProfile?.runningLevel).color,
+                color: "white",
+                padding: "4px 10px",
+                borderRadius: "12px",
+                fontSize: 12,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.5px"
+              }}>
+                {getLevelInfo(userProfile?.runningLevel).label}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -443,6 +472,52 @@ export default function ProfilePage() {
                   ))}
                 </select>
               </div>
+            </div>
+            
+            {/* Running Level Section */}
+            <div style={{ marginTop: 20 }}>
+              <label style={{ display: "block", marginBottom: 8, fontSize: 13, fontWeight: 600, color: "var(--lrc-text-secondary)", textTransform: "uppercase" }}>
+                Running Level
+              </label>
+              {!editing ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ flex: 1, height: 8, background: "var(--lrc-border)", borderRadius: 4, overflow: "hidden" }}>
+                    <div style={{ 
+                      width: `${userProfile?.runningLevel || 50}%`, 
+                      height: "100%", 
+                      background: getLevelInfo(userProfile?.runningLevel).color,
+                      transition: "width 0.3s ease"
+                    }} />
+                  </div>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: getLevelInfo(userProfile?.runningLevel).color, minWidth: 70 }}>
+                    {getLevelInfo(userProfile?.runningLevel).label}
+                  </span>
+                </div>
+              ) : (
+                <div style={{ padding: "0 8px" }}>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={formData.runningLevel}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, runningLevel: e.target.value }))}
+                    style={{
+                      width: "100%",
+                      accentColor: getLevelInfo(formData.runningLevel).color,
+                      cursor: "pointer",
+                      height: 6
+                    }}
+                  />
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontSize: 12, color: "var(--lrc-text-muted)" }}>
+                    <span>Novice</span>
+                    <span style={{ fontWeight: 600, color: getLevelInfo(formData.runningLevel).color }}>
+                      {getLevelInfo(formData.runningLevel).label}
+                    </span>
+                    <span>Elite</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -640,6 +715,63 @@ export default function ProfilePage() {
                   <div className="stat-label">Avg Pace</div>
                 </div>
               </div>
+
+              {/* Competitive Stats (Personal Bests) */}
+              {stravaActivities.length > 0 && (
+                <div style={{ marginTop: 24 }}>
+                  <h4 style={{ margin: "0 0 12px", fontSize: 15, display: "flex", alignItems: "center", gap: 8 }}>
+                    <Trophy size={16} style={{ color: "var(--lrc-pink)" }} />
+                    Estimated Personal Bests
+                  </h4>
+                  <div className="stats-strip" style={{ gridTemplateColumns: "1fr 1fr", margin: 0 }}>
+                    {(() => {
+                      // Estimate best 5K and 10K from recent runs
+                      let best5k = null;
+                      let best10k = null;
+
+                      stravaActivities.forEach(act => {
+                        const dist = act.distance || 0;
+                        const time = act.moving_time || 0;
+                        if (!time || !dist) return;
+
+                        const pace = (time / dist) * 1000; // seconds per km
+                        
+                        // Roughly 5K (4.8 - 5.5 km)
+                        if (dist >= 4800 && dist <= 5500) {
+                          if (!best5k || pace < best5k.pace) best5k = { pace, time };
+                        }
+                        // Roughly 10K (9.8 - 10.5 km)
+                        if (dist >= 9800 && dist <= 10500) {
+                          if (!best10k || pace < best10k.pace) best10k = { pace, time };
+                        }
+                      });
+
+                      const formatTime = (seconds) => {
+                        const m = Math.floor(seconds / 60);
+                        const s = Math.round(seconds % 60);
+                        return `${m}:${String(s).padStart(2, '0')}`;
+                      };
+
+                      return (
+                        <>
+                          <div className="stat-card" style={{ padding: "16px 12px" }}>
+                            <div className="stat-label" style={{ marginBottom: 8 }}>Fastest 5K</div>
+                            <div className="stat-value" style={{ fontSize: 20 }}>
+                              {best5k ? formatTime(best5k.time) : "—"}
+                            </div>
+                          </div>
+                          <div className="stat-card" style={{ padding: "16px 12px" }}>
+                            <div className="stat-label" style={{ marginBottom: 8 }}>Fastest 10K</div>
+                            <div className="stat-value" style={{ fontSize: 20 }}>
+                              {best10k ? formatTime(best10k.time) : "—"}
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                </div>
+              )}
 
               {/* Recent Strava Runs */}
               {stravaActivities.length > 0 && (
