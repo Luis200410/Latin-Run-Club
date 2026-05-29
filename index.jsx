@@ -33,6 +33,7 @@ const RaceManager = lazy(() => import("./src/pages/admin/RaceManager"));
 const AdminAttendance = lazy(
   () => import("./src/pages/admin/AdminAttendance"),
 );
+const MembersManager = lazy(() => import("./src/pages/admin/MembersManager"));
 
 // Lazy Load Member Dashboard Pages
 const DashboardLayout = lazy(
@@ -134,6 +135,7 @@ root.render(
               <Route path="events" element={<EventsManager />} />
               <Route path="races" element={<RaceManager />} />
               <Route path="attendance" element={<AdminAttendance />} />
+              <Route path="members" element={<MembersManager />} />
             </Route>
           </Routes>
         </Suspense>

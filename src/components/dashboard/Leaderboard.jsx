@@ -45,16 +45,17 @@ const PODIUM_STYLES = [
 
 export default function Leaderboard() {
   const { currentUser } = useAuth();
-  const [leaders, setLeaders] = useState([]);
+  const [allLeaders, setAllLeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterCity, setFilterCity] = useState("");
 
+  // Load all leaders once, filter client-side to avoid composite index issues
   useEffect(() => {
     async function load() {
       setLoading(true);
       try {
-        const data = await getLeaderboard(filterCity || undefined);
-        setLeaders(data);
+        const data = await getLeaderboard();
+        setAllLeaders(data);
       } catch (err) {
         console.error("Leaderboard load error:", err);
       } finally {
@@ -62,7 +63,12 @@ export default function Leaderboard() {
       }
     }
     load();
-  }, [filterCity]);
+  }, []);
+
+  // Client-side filter
+  const leaders = filterCity
+    ? allLeaders.filter((m) => m.city === filterCity)
+    : allLeaders;
 
   const topThree = leaders.slice(0, 3);
   const rest = leaders.slice(3);
@@ -90,12 +96,18 @@ export default function Leaderboard() {
       </p>
 
       {/* City Filter */}
-      <div className="filter-bar" style={{ marginBottom: 24 }}>
-        <select className="filter-select" value={filterCity} onChange={(e) => setFilterCity(e.target.value)}>
+      <div className="filter-chips-container" style={{ marginBottom: 24 }}>
+        <div className="filter-chips-bar">
           {CITY_OPTIONS.map((c) => (
-            <option key={c.value} value={c.value}>{c.label}</option>
+            <button
+              key={c.value}
+              className={`filter-chip ${filterCity === c.value ? "active" : ""}`}
+              onClick={() => setFilterCity(c.value)}
+            >
+              {c.label}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       {leaders.length === 0 ? (
