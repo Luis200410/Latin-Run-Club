@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { User } from "lucide-react";
+import logo from "../images/logo.png";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +27,7 @@ export default function Header() {
       <div className="logo-container">
         <Link to="/">
           <img
-            src="/src/images/logo.png"
+            src={logo}
             alt="Latin Run Club Logo"
             className="logo"
           />
@@ -42,10 +43,10 @@ export default function Header() {
               <Link to="/about">About</Link>
             </li>
             <li>
-              <Link to="/gallery">Gallery</Link>
+              <Link to="/community">Community</Link>
             </li>
             <li>
-              <Link to="/join">Join</Link>
+              <Link to="/partners">Partners</Link>
             </li>
           </ul>
           {currentUser ? (

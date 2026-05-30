@@ -1,8 +1,49 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Founders from "../components/Founders";
-import founders from '../info/founders.js';
 import '../style/about.css';
+
+// Testimonials Data for the auto-scrolling marquee
+const ROW1_TESTIMONIALS = [
+    {
+        id: 't1',
+        text: "It's the perfect combination of running and socializing — I get to be myself and feel loved by kind individuals.",
+        author: "Jashe Vieluf",
+        bgClass: "bg-teal"
+    },
+    {
+        id: 't2',
+        text: "Sharing my experience as a runner and coach with new running enthusiasts undoubtedly fills my heart... even more so when I contribute to them achieving their goals and personal records.",
+        author: "Yesid Nieto",
+        bgClass: "bg-peach"
+    },
+    {
+        id: 't3',
+        text: "LRC changed my view from running and in the process I met incredible people that now I can call friends, it's such a nice journey and so excited for everything that's coming for the group.",
+        author: "Isabella Saab",
+        bgClass: "bg-white"
+    }
+];
+
+const ROW2_TESTIMONIALS = [
+    {
+        id: 't4',
+        text: "I am beyond grateful for this decision, it's been an very special way to meet new people, share my passion, and bring something different to look forward to in the weekends.",
+        author: "Esteban Sánchez",
+        bgClass: "bg-lilac"
+    },
+    {
+        id: 't5',
+        text: "I have not only been able to meet great athletes but also friends who become family.",
+        author: "Isaad Medina-Weffer",
+        bgClass: "bg-teal"
+    },
+    {
+        id: 't6',
+        text: "I learned that the biggest barriers are the ones we create in our minds and that it doesn't matter a family in a new city.",
+        author: "Camila Rocha",
+        bgClass: "bg-peach"
+    }
+];
 
 export default function About() {
 
@@ -21,158 +62,170 @@ export default function About() {
         return () => observer.disconnect();
     }, []);
 
-    const founderList = founders.map((founder, index) => {
-        return <Founders
-            key={index}
-            {...founder}
-        />
-    });
 
     return (
         <div className="about-page">
 
-            {/* 1. Split Hero Section */}
-            {/* 1. New Typographic Hero Section */}
-            <section className="about-hero-section">
-                <div className="max-w-7xl">
-                    <div className="hero-title-container reveal-on-scroll">
-                        <h1 className="hero-title-big">
-                            OUR STORY<br />& HISTORY
-                        </h1>
-                    </div>
-                    <div className="hero-intro-grid reveal-on-scroll">
-                        <p className="hero-intro-text">
-                            What started as a casual weekend run between friends has evolved into a movement of cultural identity, endurance, and community.
-                        </p>
-                        <div className="hero-established">
-                            <div className="est-bar"></div>
-                            <div className="est-content">
-                                <span className="est-label">ESTABLISHED</span>
-                                <span className="est-year">2018</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+
 
             {/* 2. Evolution Timeline */}
             <section className="evolution-section">
                 <div className="bg-text-layer">LEGACY</div>
 
-                <div className="evolution-header reveal-on-scroll">
-                    <span className="evolution-label">THE EVOLUTION</span>
-                    <div className="hero-bar" style={{ margin: '0.5rem auto 0', width: '2rem' }}></div>
+                <div className="about-intro-container reveal-on-scroll">
+                    <p className="about-intro-text">
+                        What started as a casual weekend run between friends has evolved into a movement of cultural identity, endurance, and community.
+                    </p>
+                    <div className="about-intro-bar"></div>
                 </div>
 
                 <div className="timeline-container">
                     <div className="timeline-line"></div>
 
-                    {/* 2018 */}
+                    {/* Feb 2024 */}
                     <div className="timeline-item reveal-on-scroll">
                         <div className="timeline-content">
-                            <h3 className="year-title" style={{ color: '#EF4444' }}>2018</h3>
-                            <span className="year-subtitle">THE FIR<span style={{ display: 'inline-block', width: '10px', height: '10px', background: '#333', borderRadius: '50%' }}></span> MILE</span>
+                            <h3 className="year-title" style={{ color: '#EF4444' }}>Feb 2024</h3>
+                            <span className="year-subtitle">CENTRAL PARK<span style={{ display: 'inline-block', width: '8px', height: '8px', background: '#333', borderRadius: '50%', margin: '0 12px', verticalAlign: 'middle' }}></span>THE START</span>
                             <p className="year-desc">
-                                A small group of five friends gathered in the local park. No branding, no timing, just the shared rhythm of feet hitting the pavement and the Spanish language bridging the gaps.
+                                First group run in Central Park. It was a surprise when 15 people joined
                             </p>
                         </div>
                         <div className="timeline-visual">
-                            <img src="https://images.unsplash.com/photo-1530143311094-34d807799e8f?q=80&w=2669&auto=format&fit=crop" alt="The First Mile" className="timeline-img" />
+                            <img src="https://images.unsplash.com/photo-1530143311094-34d807799e8f?q=80&w=2669&auto=format&fit=crop" alt="First Group Run" className="timeline-img" />
                         </div>
                     </div>
 
-                    {/* 2020 */}
+                    {/* Jun 2024 */}
                     <div className="timeline-item reveal-on-scroll">
                         <div className="timeline-content">
-                            <h3 className="year-title" style={{ color: '#3B82F6' }}>2020</h3>
-                            <span className="year-subtitle">RESILI<span style={{ display: 'inline-block', width: '10px', height: '10px', background: '#333', borderRadius: '50%' }}></span>NCE IN MOTION</span>
+                            <h3 className="year-title" style={{ color: '#3B82F6' }}>Jun 2024</h3>
+                            <span className="year-subtitle">BOSTON<span style={{ display: 'inline-block', width: '8px', height: '8px', background: '#333', borderRadius: '50%', margin: '0 12px', verticalAlign: 'middle' }}></span>NEW CHAPTER</span>
                             <p className="year-desc">
-                                When the world slowed down, we picked up the pace. Virtual runs became our lifeline, keeping our community connected across borders during the most isolating times.
+                                Lucia and Ana from who are based in Boston open the first chapter.
                             </p>
                         </div>
                         <div className="timeline-visual">
-                            <img src="https://images.unsplash.com/photo-1552674605-469523170d9e?q=80&w=2680&auto=format&fit=crop" alt="Virtual Run Community" className="timeline-img" />
+                            <img src="https://images.unsplash.com/photo-1552674605-469523170d9e?q=80&w=2680&auto=format&fit=crop" alt="Boston Chapter" className="timeline-img" />
                         </div>
                     </div>
 
-                    {/* 2023 */}
+                    {/* Feb 2026 */}
                     <div className="timeline-item reveal-on-scroll">
                         <div className="timeline-content">
-                            <h3 className="year-title" style={{ color: '#10B981' }}>2023</h3>
-                            <span className="year-subtitle">GLOBAL<span style={{ display: 'inline-block', width: '10px', height: '10px', background: '#333', borderRadius: '50%' }}></span>EACH</span>
+                            <h3 className="year-title" style={{ color: '#10B981' }}>Feb 2026</h3>
+                            <span className="year-subtitle">5 CITIES<span style={{ display: 'inline-block', width: '8px', height: '8px', background: '#333', borderRadius: '50%', margin: '0 12px', verticalAlign: 'middle' }}></span>CONSOLIDATION</span>
                             <p className="year-desc">
-                                Expansion beyond our home city. Latin Run Club chapters began appearing in major hubs, proving that the desire for heritage-driven athleticism is universal.
+                                We have consolidated as one of the biggest Latinamerican comunnity with presence in 5 major cities.
                             </p>
                         </div>
                         <div className="timeline-visual">
-                            <img src="https://images.unsplash.com/photo-1571008887538-b36bb32f4571?q=80&w=2670&auto=format&fit=crop" alt="Global Community" className="timeline-img" />
+                            <img src="https://images.unsplash.com/photo-1571008887538-b36bb32f4571?q=80&w=2670&auto=format&fit=crop" alt="Latin American Run Community" className="timeline-img" />
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* 3. Restored Founders Section with "We Believe" Text */}
-            <section className="founders-list-section">
-                <h2 className="founders-title-main reveal-on-scroll">The Founders</h2>
-
-                <div className="founders-flex-connected reveal-on-scroll">
-                    {founderList}
+            {/* 3. Our Leaders Section */}
+            <section className="leaders-section reveal-on-scroll">
+                <div className="leaders-header">
+                    <h2 className="leaders-title">Our Leaders</h2>
+                    <span className="leaders-subtitle">Become a city lead</span>
                 </div>
 
-                <div className="founders-belief-text reveal-on-scroll">
-                    <h2>WE BELIEVE IN THE POWER OF SUPPORT, FRIENDSHIPS, AND VALUABLE EXPERIENCE.</h2>
-                    <div className="banner-bar"></div>
-                </div>
-            </section>
-
-            {/* 5. Mission & Vision */}
-            <section className="mission-vision-section">
-                <div className="max-w-7xl">
-                    <div className="mission-grid">
-                        <div className="mv-card reveal-on-scroll">
-                            <span className="mv-label">OUR MISSION</span>
-                            <p className="mv-text">
-                                To create a safe, celebratory space for Latin athletes to connect,
-                                reclaim their narrative, and run with pride in every city across the globe.
-                            </p>
+                {/* Row 1: Founders */}
+                <div className="founders-grid">
+                    <div className="leader-card founder-card">
+                        <img 
+                            src="https://images.squarespace-cdn.com/content/v1/68db0c4bc7a5784954344962/3223b54a-20de-4bef-8508-8644d9f3b2ac/IMG_9922.JPG?format=2500w" 
+                            alt="Camilo Ferreira" 
+                            className="leader-img"
+                        />
+                        <div className="leader-info">
+                            <span className="leader-name">Camilo Ferreira</span>
+                            <span className="leader-role">Founder</span>
                         </div>
-                        <div className="mv-card reveal-on-scroll" style={{ borderLeftColor: '#7C3AED' }}>
-                            <span className="mv-label" style={{ color: '#7C3AED' }}>OUR VISION</span>
-                            <p className="mv-text">
-                                A world where our culture is not just seen at the finish line,
-                                but is the driving force behind the starting gun. Limitless. Fearless. United.
-                            </p>
+                    </div>
+                    <div className="leader-card founder-card">
+                        <img 
+                            src="https://images.squarespace-cdn.com/content/v1/68db0c4bc7a5784954344962/e7acbe37-7d91-411b-bfbd-3bfa0a5f507f/IMG_3762+%281%29.jpg?format=2500w" 
+                            alt="Cristina Baquerizo" 
+                            className="leader-img"
+                        />
+                        <div className="leader-info">
+                            <span className="leader-name">Cristina Baquerizo</span>
+                            <span className="leader-role">Founder</span>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            {/* 6. CTA "Writes the Next Chapter" (Dark Mode) */}
-            <section className="cta-next-chapter">
-                <div className="cta-flex reveal-on-scroll">
-                    <div className="cta-text-side">
-                        <h2 className="cta-heading">WRITE THE NEXT<br />CHAPTER WITH US.</h2>
-                        <p className="cta-sub">
-                            Whether you're a seasoned marathoner or putting on your first pair of shoes, there's a place for you here.
-                        </p>
+                {/* Row 2: City Leads */}
+                <div className="city-leads-grid">
+                    {/* Boston */}
+                    <div className="leader-card city-lead-card bg-raspberry">
+                        <div className="leader-info">
+                            <span className="leader-name">Lucia Moreira &<br />Ana Vargas</span>
+                            <span className="leader-role">Boston Leads</span>
+                        </div>
                     </div>
-                    <div className="cta-buttons">
-                        <Link to="/join" className="btn-cta-red">JOIN US</Link>
-                        <Link to="/events" className="btn-cta-outline">UPCOMING EVENTS</Link>
+                    {/* Washington */}
+                    <div className="leader-card city-lead-card bg-olive">
+                        <div className="leader-info">
+                            <span className="leader-name">Camilo Zarate</span>
+                            <span className="leader-role">Washington Lead</span>
+                        </div>
+                    </div>
+                    {/* London */}
+                    <div className="leader-card city-lead-card bg-lilac">
+                        <div className="leader-info">
+                            <span className="leader-name">Sebastian Caro &<br />Viviana Conde</span>
+                            <span className="leader-role">London Leads</span>
+                        </div>
+                    </div>
+                    {/* Atlanta */}
+                    <div className="leader-card city-lead-card bg-peach">
+                        <div className="leader-info">
+                            <span className="leader-name">Anika Sabag</span>
+                            <span className="leader-role">Atlanta Lead</span>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div className="newsletter-minimal reveal-on-scroll">
-                    <div className="stay-updated-label">STAY UPDATED</div>
-                    <div className="input-minimal-container">
-                        <input type="email" placeholder="YOUR EMAIL" className="input-minimal" />
-                        <span className="material-symbols-outlined input-arrow">arrow_forward</span>
+            {/* 4. Testimonials Section (Interactive Auto-scrolling Carousel) */}
+            <section className="testimonials-carousel-section reveal-on-scroll">
+                <div className="testimonials-carousel-header">
+                    <h2 className="testimonials-main-title">From Our Members</h2>
+                </div>
+
+                <div className="carousel-container">
+                    {/* Row 1: Moving Left */}
+                    <div className="ticker-wrap left-moving">
+                        <div className="ticker-track">
+                            {[...ROW1_TESTIMONIALS, ...ROW1_TESTIMONIALS, ...ROW1_TESTIMONIALS].map((item, idx) => (
+                                <div key={`r1-${item.id}-${idx}`} className={`testimonial-carousel-card ${item.bgClass}`}>
+                                    <p className="testimonial-text">"{item.text}"</p>
+                                    <span className="testimonial-author">{item.author}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <p style={{ textAlign: 'center', fontSize: '0.65rem', color: '#888', marginTop: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        Follow us on social and join our community. Real-time updates, marathon prep, and local run announcements.
-                    </p>
+
+                    {/* Row 2: Moving Right */}
+                    <div className="ticker-wrap right-moving">
+                        <div className="ticker-track">
+                            {[...ROW2_TESTIMONIALS, ...ROW2_TESTIMONIALS, ...ROW2_TESTIMONIALS].map((item, idx) => (
+                                <div key={`r2-${item.id}-${idx}`} className={`testimonial-carousel-card ${item.bgClass}`}>
+                                    <p className="testimonial-text">"{item.text}"</p>
+                                    <span className="testimonial-author">{item.author}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </section>
+
+
 
         </div>
     );

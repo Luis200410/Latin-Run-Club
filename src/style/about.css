@@ -127,7 +127,7 @@
 
 /* Evolution Timeline Section */
 .evolution-section {
-    padding: 6rem 0;
+    padding: 2rem 0 6rem 0;
     position: relative;
 }
 
@@ -485,125 +485,328 @@
     cursor: pointer;
 }
 
-/* Founders Section (Styled with Black BG) */
-/* Connected Founders Styles */
-.founders-list-section {
+/* Leaders & City Leads Section (Mockup Design) */
+.leaders-section {
     padding: 6rem var(--page-padding);
-    background-color: black;
-    color: white;
+    background-color: rgb(242, 239, 235); /* Match background from mockup */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.founders-title-main {
+.leaders-header {
     text-align: center;
-    font-size: 3rem;
-    font-weight: 900;
-    text-transform: uppercase;
     margin-bottom: 4rem;
-    letter-spacing: -0.02em;
 }
 
-.founders-flex-connected {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0;
+.leaders-title {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #1a2536;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+    font-family: 'Inter', sans-serif;
+}
+
+.leaders-subtitle {
+    font-size: 1.1rem;
+    color: #4A5568;
+    text-transform: none;
+    letter-spacing: normal;
+    display: block;
+}
+
+/* Founders Grid: Row 1 */
+.founders-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
     width: 100%;
-    max-width: 90rem;
+    max-width: 600px; /* Aligns side-by-side centered */
+    margin-bottom: 4rem;
+}
+
+/* City Leads Grid: Row 2 */
+.city-leads-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* Common Leader Card Styles */
+.leader-card {
     position: relative;
-    z-index: 10;
-    margin-bottom: 5rem;
-    /* Space before the text */
+    width: 100%;
+    aspect-ratio: 3 / 4; /* Card proportion */
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.founders-belief-text {
-    max-width: 60rem;
-    text-align: center;
-    margin-top: var(--page-padding);
+.leader-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
-.founders-belief-text h2 {
-    font-size: 2.5rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    margin-bottom: var(--page-padding);
-}
-
-@media (min-width: 768px) {
-    .founders-belief-text h2 {
-        font-size: 4rem;
-    }
-}
-
-.founder-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 140px;
-    /* Reduced width to fit more */
-    margin: 0 1rem;
-    position: relative;
-}
-
-.founder-img-container {
-    margin-bottom: 1rem;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 120px;
-    height: 120px;
-}
-
-.founder-img {
+.leader-img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
     object-fit: cover;
-    border: 4px solid var(--founder-color, white);
-    background-color: black;
-    position: relative;
-    z-index: 2;
-    transition: transform 0.3s ease;
 }
 
-.founder-card:hover .founder-img {
-    transform: scale(1.1);
+/* Overlay information bottom-left */
+.leader-info {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: white;
+    z-index: 10;
 }
 
-/* The Connecting Line */
+.leader-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 0.25rem;
+    text-align: left;
+}
+
+.leader-role {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    text-align: left;
+}
+
+/* Background gradient overlay on images for text readability */
 .founder-card::after {
     content: '';
     position: absolute;
-    top: 60px;
-    /* Half of image height (120px / 2) */
-    right: -50%;
-    /* Reach to the next item center approx */
-    width: 100%;
-    /* Span the gap */
-    height: 4px;
-    background-color: var(--founder-color, white);
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0) 100%);
     z-index: 1;
-    transform: translateY(-50%);
 }
 
-/* Hide line for the last item */
-.founder-card:last-child::after {
-    display: none;
+/* Colors for solid-colored City Lead Cards */
+.bg-raspberry {
+    background-color: #C72C5B;
 }
 
-.founder-name {
-    font-size: 0.875rem;
+.bg-olive {
+    background-color: #55664C;
+}
+
+.bg-lilac {
+    background-color: #B398FC;
+}
+
+.bg-peach {
+    background-color: #FC824A;
+}
+
+/* Responsive grid layouts */
+@media (max-width: 900px) {
+    .city-leads-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 600px) {
+    .founders-grid {
+        grid-template-columns: 1fr;
+        max-width: 280px;
+    }
+
+    .city-leads-grid {
+        grid-template-columns: 1fr;
+        max-width: 280px;
+        gap: 1.5rem;
+    }
+
+    .leaders-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Testimonials Carousel Section (Mockup & Premium Ticker) */
+.testimonials-carousel-section {
+    padding: 6rem 0; /* Full-bleed layout */
+    background-color: rgb(242, 239, 235);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+}
+
+.testimonials-carousel-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.testimonials-main-title {
+    font-size: 4rem;
     font-weight: 700;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    line-height: 1.2;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-    /* readable on bg image */
+    color: #1a2536;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+.carousel-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Ticker Wrapper */
+.ticker-wrap {
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+}
+
+/* Ticker Track holding cards in a single row */
+.ticker-track {
+    display: flex;
+    gap: 2rem;
+    width: max-content;
+    will-change: transform;
+}
+
+/* Card Styling */
+.testimonial-carousel-card {
+    width: 320px;
+    min-width: 320px;
+    padding: 2.5rem 2rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.testimonial-carousel-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-text {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    font-weight: 500;
+    margin: 0 0 2rem 0;
+    color: #1A2536;
+    text-align: left;
+}
+
+.testimonial-author {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1A2536;
+    opacity: 0.9;
+    text-align: left;
+}
+
+/* Card Background Color Variations */
+.testimonial-carousel-card.bg-teal {
+    background-color: #55BCC9; /* Soft bright teal matching mockup */
+    color: #1A2536;
+}
+
+.testimonial-carousel-card.bg-peach {
+    background-color: #FCAB84; /* Soft warm peach matching mockup */
+    color: #1A2536;
+}
+
+.testimonial-carousel-card.bg-lilac {
+    background-color: #B398FC; /* Lilac purple matching mockup */
+    color: #1A2536;
+}
+
+.testimonial-carousel-card.bg-white {
+    background-color: #ffffff; /* Crisp white card matching mockup */
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: #1A2536;
+}
+
+/* Keyframe Animations */
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-33.3333%);
+    }
+}
+
+@keyframes scrollRight {
+    0% {
+        transform: translateX(-33.3333%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Applying scroll animations */
+.left-moving .ticker-track {
+    animation: scrollLeft 45s linear infinite;
+}
+
+.right-moving .ticker-track {
+    animation: scrollRight 45s linear infinite;
+}
+
+/* Pause scroll on hover for interactive reading */
+.ticker-wrap:hover .ticker-track {
+    animation-play-state: paused;
+}
+
+/* About Intro Styles */
+.about-intro-container {
+    text-align: center;
+    max-width: 48rem;
+    margin: 3rem auto 5rem auto;
+    padding: 0 var(--page-padding);
+}
+
+.about-intro-text {
+    font-size: 1.8rem;
+    line-height: 1.5;
+    font-weight: 500;
+    color: #1A2536;
+    letter-spacing: -0.01em;
+}
+
+.about-intro-bar {
+    width: 2.5rem;
+    height: 3px;
+    background-color: var(--brand-orange);
+    margin: 2.5rem auto 0 auto;
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    .about-intro-text {
+        font-size: 1.35rem;
+        line-height: 1.45;
+    }
+    .about-intro-container {
+        margin: 1.5rem auto 3rem auto;
+    }
+    .about-intro-bar {
+        margin-top: 1.5rem;
+    }
 }

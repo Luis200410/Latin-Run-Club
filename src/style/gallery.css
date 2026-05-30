@@ -31,8 +31,7 @@
 }
 
 .gallery-bg.active {
-    opacity: 0.6;
-    /* Darker/More visible as requested */
+    opacity: 1; /* Fully visible background image, exactly as the original */
 }
 
 /* Main Layout */
@@ -124,6 +123,11 @@
 }
 
 .logo-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 1.5rem;
+    box-sizing: border-box;
     transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), filter 0.3s ease;
     opacity: 0;
     /* Initial for JS fade in */
@@ -208,36 +212,27 @@
 
 /* City Label */
 .city-label {
-    /* Mobile/Tablet: Hidden completely as requested */
-    display: none;
+    display: block;
+    font-size: 1.35rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    color: white !important; /* Premium high contrast white text inside the colored bar */
+    text-shadow: none !important; /* Removed text shadow completely */
+    opacity: 1 !important; /* Always visible */
+    pointer-events: none;
+    transform: none !important;
+    transition: none !important;
 }
 
-/* Desktop: Restore visibility logic (Hidden default, Show on Hover) */
-@media (min-width: 1024px) {
+@media (max-width: 768px) {
     .city-label {
-        display: block;
-        /* Bring it back */
-        font-size: 1.5rem;
-        margin-left: 1rem;
-        opacity: 0;
-        /* Inline hidden */
-        transform: translateX(20px);
-        transition: all 0.4s ease;
-        pointer-events: none;
-
-        /* Base styles */
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        white-space: nowrap;
-        text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
-        /* Black shadow */
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
     }
-
-    /* Group Hover -> Show Label ONLY on desktop */
-    .city-bar-row:hover .city-label {
-        opacity: 1;
-        transform: translateX(10px);
+    .logo-bar {
+        padding-right: 0.8rem !important;
     }
 }
 

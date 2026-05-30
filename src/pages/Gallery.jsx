@@ -1,11 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import '../style/gallery.css';
 import '../style/city-new-york.css'; // Reusing the detail styles
-import Atlanta from '../components/cities/Atlanta';
-import Boston from '../components/cities/Boston';
-import London from '../components/cities/London';
-import Washington from '../components/cities/Washington';
-import NewYork from '../components/cities/NewYork';
 
 // City Data
 const cities = [
@@ -14,7 +9,7 @@ const cities = [
         name: 'New York',
         color: 'rgb(0, 151, 178)', // Teal
         bgId: 'bg-teal',
-        image: 'https://images.unsplash.com/photo-1496871455396-14e56815f1f4?q=80&w=2570&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1499092346589-b9b6be3e94b2?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         subtitle: 'The Concrete Jungle',
         description: 'Run through the veins of the city that never sleeps. From Central Park loops to the West Side Highway, experience the energy of the world\'s greatest metropolis.',
         stats: { runners: '12.5k', routes: '42', events: '150+' }
@@ -24,7 +19,7 @@ const cities = [
         name: 'Washington',
         color: '#3A4D39', // Green
         bgId: 'bg-green',
-        image: 'https://images.unsplash.com/photo-1617581629397-a72507c3de9e?q=80&w=2670&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1501466044931-62695aada8e9?q=80&w=1987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         subtitle: 'Capital Strides',
         description: 'History in motion. Navigate the monuments, the Mall, and the hidden trails of Rock Creek Park. A running experience monumental in scale.',
         stats: { runners: '8.2k', routes: '28', events: '95' }
@@ -34,7 +29,7 @@ const cities = [
         name: 'Boston',
         color: '#D12A5E', // Red/Pink
         bgId: 'bg-navy',
-        image: 'https://images.unsplash.com/photo-1506199326888-0f305f2424b9?q=80&w=2670&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1714321363628-d65f68f3e2f4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         subtitle: 'The Marathon City',
         description: 'Where running is religion. Trace the Charles River, conquer Heartbreak Hill, and feel the spirit of the world\'s oldest annual marathon.',
         stats: { runners: '10.1k', routes: '35', events: '112' }
@@ -44,7 +39,7 @@ const cities = [
         name: 'Atlanta',
         color: '#FD844A', // Orange
         bgId: 'bg-orange',
-        image: 'https://images.unsplash.com/photo-1575913251780-6bc150426555?q=80&w=2670&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1675449672066-db3b9a6cd717?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         subtitle: 'The Running City',
         description: 'Southern hospitality meets urban endurance. From loop of the BeltLine to the hills of Buckhead, find your pace in the city in a forest.',
         stats: { runners: '7.8k', routes: '24', events: '88' }
@@ -54,7 +49,7 @@ const cities = [
         name: 'London',
         color: '#8C77AB', // Purple
         bgId: 'bg-purple',
-        image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=2670&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1634240085173-5e65c4096299?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         subtitle: 'Royal Parks & River Runs',
         description: 'Timeless routes through historic streets. Dash along the Thames, weave through Royal Parks, and sprint past landmarks that have stood for centuries.',
         stats: { runners: '15.2k', routes: '55', events: '200+' }
@@ -63,8 +58,6 @@ const cities = [
 
 export default function Gallery() {
     const [activeCityColor, setActiveCityColor] = useState(null);
-    const [selectedCity, setSelectedCity] = useState(null);
-    const detailsRef = useRef(null);
 
     // Entrance animation trigger
     useEffect(() => {
@@ -89,16 +82,6 @@ export default function Gallery() {
         setActiveCityColor(null);
     };
 
-    const handleCityClick = (city) => {
-        setSelectedCity(city);
-        // Initial scroll or focus could go here if desired, 
-        // e.g. setTimeout(() => detailsRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
-        // But user said "appear bellow", imply interaction flows naturally.
-        setTimeout(() => {
-            detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-    };
-
     return (
         <div className="gallery-container">
             {/* Background Images Layer */}
@@ -107,7 +90,7 @@ export default function Gallery() {
                     <div
                         key={city.bgId}
                         className={`gallery-bg ${activeCityColor === city.id ? 'active' : ''}`}
-                        style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${city.image}')` }}
+                        style={{ backgroundImage: `url('${city.image}')` }}
                     ></div>
                 ))}
             </div>
@@ -134,10 +117,9 @@ export default function Gallery() {
                         {cities.map((city) => (
                             <div
                                 key={city.id}
-                                className="group relative flex items-center cursor-pointer city-bar-row"
+                                className="group relative flex items-center city-bar-row"
                                 onMouseEnter={() => showGallery(city.id)}
                                 onMouseLeave={hideGallery}
-                                onClick={() => handleCityClick(city)}
                             >
                                 <div
                                     className={`logo-bar bar-${city.id}`}
@@ -146,81 +128,17 @@ export default function Gallery() {
                                         height: '3.5rem', /* approx h-14 */
                                         '--city-color': city.color // Pass color for CSS hover shadow
                                     }}
-                                ></div>
-                                <span
-                                    className="city-label"
-                                    style={{ color: city.color }}
                                 >
-                                    {city.name}
-                                </span>
+                                    <span className="city-label">
+                                        {city.name}
+                                    </span>
+                                </div>
                             </div>
                         ))}
                     </div>
 
                 </div>
             </main>
-
-            {/* DETAIL SECTION (Inline) */}
-            {/* DETAIL SECTION (Conditional) */}
-            {selectedCity && selectedCity.id === 'washington' ? (
-                <Washington city={selectedCity} ref={detailsRef} />
-            ) : selectedCity && selectedCity.id === 'new-york' ? (
-                <NewYork city={selectedCity} ref={detailsRef} />
-            ) : selectedCity && selectedCity.id === 'atlanta' ? (
-                <Atlanta city={selectedCity} ref={detailsRef} />
-            ) : selectedCity && selectedCity.id === 'london' ? (
-                <London city={selectedCity} ref={detailsRef} />
-            ) : selectedCity && selectedCity.id === 'boston' ? (
-                <Boston city={selectedCity} ref={detailsRef} />
-            ) : selectedCity ? (
-                <div ref={detailsRef} className="city-detail-section" style={{ backgroundColor: selectedCity.color }}>
-                    <div className="city-content-wrapper fade-in-up">
-                        <div className="city-header">
-                            <span className="city-subtitle">LATIN RUN CLUB</span>
-                            <h1 className="city-title">{selectedCity.name}</h1>
-                            <p className="city-description">{selectedCity.description}</p>
-
-                            <div className="city-actions">
-                                <button className="city-btn btn-primary">Join Run</button>
-                                <button className="city-btn btn-secondary">Explore Routes</button>
-                            </div>
-                        </div>
-
-                        {/* Collage - Simplified for dynamic rendering */}
-                        <div className="city-collage">
-                            {/* Using same image for collage slots for now, or could have array in data */}
-                            <div className="collage-item collage-1">
-                                <img src={selectedCity.image} alt="Detail 1" />
-                            </div>
-                            <div className="collage-item collage-2">
-                                <img src={selectedCity.image} alt="Detail 2" style={{ transform: 'scale(1.2)' }} />
-                            </div>
-                            <div className="collage-item collage-3">
-                                <img src={selectedCity.image} alt="Detail 3" style={{ opacity: 0.8 }} />
-                                <div className="collage-caption">CITY SQUAD</div>
-                            </div>
-                        </div>
-
-                        <div className="city-stats">
-                            <div className="stat-item">
-                                <span className="stat-label">RUNNERS</span>
-                                <div className="stat-value">{selectedCity.stats.runners}</div>
-                                <span className="stat-sub">ACTIVE MEMBERS</span>
-                            </div>
-                            <div className="stat-item">
-                                <span className="stat-label">ROUTES</span>
-                                <div className="stat-value">{selectedCity.stats.routes}</div>
-                                <span className="stat-sub">CURATED PATHS</span>
-                            </div>
-                            <div className="stat-item">
-                                <span className="stat-label">EVENTS</span>
-                                <div className="stat-value">{selectedCity.stats.events}</div>
-                                <span className="stat-sub">ANNUAL MEETUPS</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ) : null}
         </div>
     );
 }

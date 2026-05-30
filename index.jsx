@@ -17,8 +17,8 @@ import "./src/style/index.css";
 const Layout = lazy(() => import("./src/layouts/Layout"));
 const Home = lazy(() => import("./src/pages/Home"));
 const About = lazy(() => import("./src/pages/About"));
-const Gallery = lazy(() => import("./src/pages/Gallery"));
-const Join = lazy(() => import("./src/pages/Join"));
+const Partners = lazy(() => import("./src/pages/Partners"));
+const Community = lazy(() => import("./src/pages/Community"));
 const SignIn = lazy(() => import("./src/pages/SignIn"));
 const SignUp = lazy(() => import("./src/pages/SignUp"));
 
@@ -79,8 +79,8 @@ root.render(
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="about" element={<About />} />
-              <Route path="gallery" element={<Gallery />} />
-              <Route path="join" element={<Join />} />
+              <Route path="partners" element={<Partners />} />
+              <Route path="community" element={<Community />} />
               <Route path="signin" element={<SignIn />} />
               <Route path="signup" element={<SignUp />} />
             </Route>

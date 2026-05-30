@@ -11,7 +11,7 @@ export default function MainIndex() {
                 <h1 className="under">{t('club')}</h1>
             </div>
             <div className="links">
-                <Link to="/join" className="join">{t('join_us')}</Link>
+                <Link to="/community" className="join">{t('join_us')}</Link>
                 <Link to="/about" className="about">{t('about')}</Link>
                 <Link to="/donate" className="donate">{t('donate')}</Link>
             </div>
