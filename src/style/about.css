@@ -42,7 +42,7 @@
 
 /* New Typographic Hero "OUR STORY & HISTORY" */
 .about-hero-section {
-    padding: 6rem var(--page-padding);
+    padding: 2rem var(--page-padding) 6rem var(--page-padding);
     background-color: var(--brand-bg);
 }
 
