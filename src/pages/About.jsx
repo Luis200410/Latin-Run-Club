@@ -403,36 +403,6 @@ export default function About() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="cta-next-chapter reveal-on-scroll">
-        <div className="cta-flex">
-          <div className="cta-text-side">
-            <h2 className="cta-heading">Write the next chapter</h2>
-            <p className="cta-sub">
-              Join us on our next run and become part of the family.
-            </p>
-          </div>
-          <div className="cta-buttons">
-            <Link to="/signup" className="btn-cta-red">
-              Join Now
-            </Link>
-            <Link to="/community" className="btn-cta-outline">
-              See Events
-            </Link>
-          </div>
-        </div>
-        <div className="newsletter-minimal">
-          <p className="stay-updated-label">Stay Updated</p>
-          <div className="input-minimal-container">
-            <input
-              type="email"
-              placeholder="YOUR EMAIL"
-              className="input-minimal"
-            />
-            <span className="input-arrow">→</span>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
