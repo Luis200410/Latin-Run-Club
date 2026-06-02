@@ -348,8 +348,12 @@
 
     .auth-sidebar {
         width: 100%;
-        min-height: 250px;
+        min-height: 280px;
         padding: 2rem;
+    }
+
+    .sidebar-content {
+        margin-top: 1.5rem;
     }
 
     .auth-form-container {

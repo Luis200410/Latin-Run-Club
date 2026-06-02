@@ -1979,11 +1979,12 @@
 
 /* ─── Leaderboard Podium ─────────────────────────────────── */
 .leaderboard-podium {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
-  align-items: end;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  align-items: flex-end;
   padding: 8px 0 4px;
+  flex-wrap: wrap;
 }
 
 .podium-entry {
@@ -1991,6 +1992,8 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  width: 120px;
+  min-width: 100px;
 }
 
 .podium-1 {

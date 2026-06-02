@@ -57,6 +57,11 @@ header {
   border: none;
   font-size: 2rem;
   cursor: pointer;
+  line-height: 1;
+  padding: 0 0 6px 0; /* Added bottom padding for optical alignment */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-container {
@@ -69,6 +74,11 @@ header {
   display: flex;
   align-items: center;
   width: auto;
+}
+
+.logo-container a {
+  display: flex;
+  align-items: center;
 }
 
 .btn-link {
@@ -158,7 +168,7 @@ header {
   }
 
   .burger-menu {
-    display: block;
+    display: flex;
   }
 
   .nav-container {

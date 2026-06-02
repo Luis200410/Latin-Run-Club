@@ -127,7 +127,7 @@ export default function Leaderboard() {
                 {/* Render 2nd, 1st, 3rd */}
                 {[1, 0, 2].map((idx) => {
                   const entry = topThree[idx];
-                  if (!entry) return <div key={idx} />;
+                  if (!entry) return null;
                   const style = PODIUM_STYLES[idx];
                   const initials = getInitials(entry.firstName, entry.lastName);
                   const avatarColor = getAvatarColor(entry.firstName);
