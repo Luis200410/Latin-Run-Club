@@ -40,34 +40,35 @@ export default function Header() {
         <div className="btn-link">
           <ul className="list">
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/about" onClick={() => setIsOpen(false)}>About</Link>
             </li>
             <li>
-              <Link to="/community">Community</Link>
+              <Link to="/community" onClick={() => setIsOpen(false)}>Community</Link>
             </li>
             <li>
-              <Link to="/partners">Partners</Link>
+              <Link to="/partners" onClick={() => setIsOpen(false)}>Partners</Link>
             </li>
           </ul>
           {currentUser ? (
             <div className="user-nav-actions">
-              <Link to="/dashboard" className="btn-dashboard">
+              <Link to="/dashboard" className="btn-dashboard" onClick={() => setIsOpen(false)}>
                 Dashboard
               </Link>
               <Link
                 to="/dashboard/profile"
                 className="btn-profile"
                 title="My Profile"
+                onClick={() => setIsOpen(false)}
               >
                 <User size={20} />
                 <span className="profile-text">Profile</span>
               </Link>
-              <button className="log log-out-ghost" onClick={handleLogout}>
+              <button className="log log-out-ghost" onClick={() => { setIsOpen(false); handleLogout(); }}>
                 Log Out
               </button>
             </div>
           ) : (
-            <Link to="/signin">
+            <Link to="/signin" onClick={() => setIsOpen(false)}>
               <button className="log">
                 <i></i>Sign In
               </button>

@@ -12,9 +12,11 @@ import {
   Calendar,
   Clock,
   Users,
-  TrendingUp,
   CheckCircle,
   Award,
+  LayoutGrid,
+  List,
+  Trophy,
 } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
@@ -71,6 +73,7 @@ export default function CityPage() {
   const [runs, setRuns] = useState([]);
   const [cityInfo, setCityInfo] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState("grid"); // "grid" | "list"
   const [loading, setLoading] = useState(true);
   const [rsvpLoading, setRsvpLoading] = useState({});
 
@@ -251,10 +254,35 @@ export default function CityPage() {
               style={{
                 background: "var(--lrc-purple-light)",
                 color: "var(--lrc-purple)",
+                marginRight: "auto"
               }}
             >
               {members.length}
             </span>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button 
+                onClick={() => setViewMode("grid")}
+                style={{ 
+                  background: viewMode === "grid" ? "var(--lrc-teal-light)" : "transparent",
+                  color: viewMode === "grid" ? "var(--lrc-teal)" : "var(--lrc-text-muted)",
+                  border: "none", padding: "6px", borderRadius: "6px", cursor: "pointer", display: "flex", alignItems: "center"
+                }}
+                title="Grid View"
+              >
+                <LayoutGrid size={18} />
+              </button>
+              <button 
+                onClick={() => setViewMode("list")}
+                style={{ 
+                  background: viewMode === "list" ? "var(--lrc-teal-light)" : "transparent",
+                  color: viewMode === "list" ? "var(--lrc-teal)" : "var(--lrc-text-muted)",
+                  border: "none", padding: "6px", borderRadius: "6px", cursor: "pointer", display: "flex", alignItems: "center"
+                }}
+                title="List View"
+              >
+                <List size={18} />
+              </button>
+            </div>
           </div>
 
           <div className="dash-search">
@@ -278,25 +306,25 @@ export default function CityPage() {
               </p>
             </div>
           ) : (
-            <div className="member-grid">
+            <div className={viewMode === "grid" ? "member-grid" : "member-list"}>
               {filteredMembers.map((member) => (
-                <div className="member-card" key={member.id}>
+                <div className={viewMode === "grid" ? "member-card" : "member-list-item"} key={member.id}>
                   <div
                     className="member-avatar"
                     style={{ background: getAvatarColor(member.firstName) }}
                   >
                     {member.photoURL ? (
-                      <img src={member.photoURL} alt={member.firstName} />
+                      <img src={member.photoURL} alt={member.firstName} style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
                     ) : (
                       getInitials(member.firstName, member.lastName)
                     )}
                   </div>
-                  <div className="member-name">
-                    {member.firstName}{" "}
-                    {member.lastName?.[0] ? member.lastName[0] + "." : ""}
+                  <div className="member-name" style={{ fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {member.firstName} {member.lastName || ""}
                   </div>
                   <div className="member-stat">
-                    {member.runsAttended || 0} runs
+                    <Trophy size={14} style={{ display: "inline", verticalAlign: "middle", marginRight: 4, color: "var(--lrc-orange)" }} />
+                    {member.totalPoints || 0} pts
                   </div>
                 </div>
               ))}
@@ -357,9 +385,8 @@ export default function CityPage() {
                   >
                     {getInitials(member.firstName, member.lastName)}
                   </div>
-                  <span className="leaderboard-name">
-                    {member.firstName}{" "}
-                    {member.lastName?.[0] ? member.lastName[0] + "." : ""}
+                  <span className="leaderboard-name" style={{ display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {member.firstName} {member.lastName || ""}
                   </span>
                   <span className="leaderboard-value">
                     {member.runsAttended || 0} runs

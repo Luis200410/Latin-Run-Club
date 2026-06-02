@@ -127,7 +127,7 @@ export default function Leaderboard() {
                 {/* Render 2nd, 1st, 3rd */}
                 {[1, 0, 2].map((idx) => {
                   const entry = topThree[idx];
-                  if (!entry) return <div key={idx} />;
+                  if (!entry) return null;
                   const style = PODIUM_STYLES[idx];
                   const initials = getInitials(entry.firstName, entry.lastName);
                   const avatarColor = getAvatarColor(entry.firstName);
@@ -149,7 +149,7 @@ export default function Leaderboard() {
                         ) : initials}
                       </div>
                       <div className="podium-name">
-                        {entry.firstName} {entry.lastName?.[0]}.
+                        {entry.firstName} {entry.lastName}
                         {isCurrentUser && <span style={{ color: "var(--lrc-teal)", fontSize: 11, display: "block" }}>you</span>}
                       </div>
                       <div className="podium-points">{entry.totalPoints || 0} pts</div>

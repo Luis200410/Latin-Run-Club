@@ -4,7 +4,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase/config";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import app from "../../firebase/config";
-import { getPastUserRuns, disconnectStrava } from "../../services/firestoreService";
+import { getPastUserRuns, disconnectStrava, getAttendedRaces } from "../../services/firestoreService";
 import QRCode from "react-qr-code";
 import {
   User,
@@ -79,6 +79,7 @@ export default function ProfilePage() {
   });
 
   const [pastRuns, setPastRuns] = useState([]);
+  const [attendedRaces, setAttendedRaces] = useState([]);
   const [loadingRuns, setLoadingRuns] = useState(true);
 
   const [stravaActivities, setStravaActivities] = useState([]);
@@ -90,8 +91,12 @@ export default function ProfilePage() {
     async function fetchPastRuns() {
       if (!currentUser?.uid) return;
       try {
-        const runs = await getPastUserRuns(currentUser.uid);
+        const [runs, races] = await Promise.all([
+          getPastUserRuns(currentUser.uid),
+          getAttendedRaces(currentUser.uid)
+        ]);
         setPastRuns(runs);
+        setAttendedRaces(races);
       } catch (err) {
         console.error("Failed to fetch past runs", err);
       } finally {
@@ -566,6 +571,46 @@ export default function ProfilePage() {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Trophy Case Section (Attended Races) */}
+      <div className="dash-card" style={{ marginTop: 24 }}>
+        <div className="profile-section">
+          <h3>Trophy Case <Trophy size={20} style={{ display: "inline", verticalAlign: "bottom", marginLeft: 8, color: "var(--lrc-orange)" }} /></h3>
+          <p style={{ fontSize: 13, color: "var(--lrc-text-secondary)", marginBottom: 16 }}>
+            Races you've officially run with Latin Run Club.
+          </p>
+          {loadingRuns ? (
+            <p style={{ color: "var(--lrc-text-muted)" }}>Loading trophies...</p>
+          ) : attendedRaces.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-emoji">🏅</div>
+              <h3>No races yet</h3>
+              <p>Attend an official race and have the admin scan your QR to earn trophies and points.</p>
+            </div>
+          ) : (
+            <div className="run-history-list" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {attendedRaces.map((race) => (
+                <div key={race.id} className="run-item" style={{ borderBottom: "1px solid var(--lrc-border)", paddingBottom: 16, display: "flex", alignItems: "center", gap: 16 }}>
+                  <div className="run-date-badge" style={{ background: "var(--lrc-orange-light)", color: "var(--lrc-orange)" }}>
+                    <span className="run-date-month">{race.date?.toDate ? format(race.date.toDate(), "MMM") : "---"}</span>
+                    <span className="run-date-day">{race.date?.toDate ? format(race.date.toDate(), "d") : "--"}</span>
+                  </div>
+                  <div className="run-info" style={{ flex: 1 }}>
+                    <h4 style={{ margin: 0, fontSize: "1rem", color: "var(--lrc-orange)" }}>{race.name}</h4>
+                    <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "var(--lrc-text-secondary)" }}>
+                      <MapPin size={12} style={{ marginRight: 4, display: "inline" }} />
+                      {race.location}
+                    </p>
+                  </div>
+                  <div style={{ textAlign: "right", fontWeight: "bold", color: "var(--lrc-orange)" }}>
+                    +{race.pointValue || 0} pts
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

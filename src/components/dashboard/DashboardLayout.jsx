@@ -58,8 +58,7 @@ function getInitials(firstName, lastName) {
 const ALL_NAV_ITEMS = [
   { to: "/dashboard", icon: Home, label: "Home", end: true },
   { to: "/dashboard/city", icon: MapPin, label: "My City" },
-  { to: "/dashboard/explore", icon: Globe, label: "Explore" },
-  { to: "/dashboard/races", icon: Trophy, label: "Races" },
+  { to: "/dashboard/races", icon: Trophy, label: "Explore Races" },
   { to: "/dashboard/leaderboard", icon: Award, label: "Leaderboard" },
   { to: "/dashboard/profile", icon: User, label: "Profile" },
 ];

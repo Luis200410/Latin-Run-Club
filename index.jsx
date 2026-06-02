@@ -43,9 +43,7 @@ const DashboardHome = lazy(
   () => import("./src/components/dashboard/DashboardHome"),
 );
 const CityPage = lazy(() => import("./src/components/dashboard/CityPage"));
-const ExploreCities = lazy(
-  () => import("./src/components/dashboard/ExploreCities"),
-);
+
 const RacesPage = lazy(() => import("./src/components/dashboard/RacesPage"));
 const RaceDetail = lazy(
   () => import("./src/components/dashboard/RaceDetail"),
@@ -114,7 +112,7 @@ root.render(
             >
               <Route index element={<DashboardHome />} />
               <Route path="city" element={<CityPage />} />
-              <Route path="explore" element={<ExploreCities />} />
+
               <Route path="races" element={<RacesPage />} />
               <Route path="race/:raceId" element={<RaceDetail />} />
               <Route path="leaderboard" element={<Leaderboard />} />
