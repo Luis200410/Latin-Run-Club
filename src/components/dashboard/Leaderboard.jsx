@@ -149,7 +149,7 @@ export default function Leaderboard() {
                         ) : initials}
                       </div>
                       <div className="podium-name">
-                        {entry.firstName} {entry.lastName?.[0]}.
+                        {entry.firstName} {entry.lastName}
                         {isCurrentUser && <span style={{ color: "var(--lrc-teal)", fontSize: 11, display: "block" }}>you</span>}
                       </div>
                       <div className="podium-points">{entry.totalPoints || 0} pts</div>

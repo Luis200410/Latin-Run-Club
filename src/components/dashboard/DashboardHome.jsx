@@ -7,6 +7,7 @@ import {
   subscribeToActivityFeed,
   getCityMembers,
   getLeaderboard,
+  getUserNextRace,
 } from "../../services/firestoreService";
 import {
   Calendar,
@@ -220,6 +221,7 @@ function ActivityFeed({ items }) {
 export default function DashboardHome() {
   const { currentUser, userProfile } = useAuth();
   const [nextRun, setNextRun] = useState(null);
+  const [nextRace, setNextRace] = useState(null);
   const [feedItems, setFeedItems] = useState([]);
   const [memberCount, setMemberCount] = useState(0);
   const [miniLeaderboard, setMiniLeaderboard] = useState([]);
@@ -237,12 +239,14 @@ export default function DashboardHome() {
 
     async function load() {
       try {
-        const [run, members, leaders] = await Promise.all([
+        const [run, members, leaders, race] = await Promise.all([
           getNextRun(city),
           getCityMembers(city),
           getLeaderboard(city),
+          getUserNextRace(currentUser.uid)
         ]);
         setNextRun(run);
+        setNextRace(race);
         setMemberCount(members.length);
         setMiniLeaderboard(leaders.slice(0, 5));
 
@@ -328,6 +332,37 @@ export default function DashboardHome() {
       {/* Motivational Banner */}
       <div className="motivational-banner">{getRandomQuote()}</div>
 
+      {/* Stats Strip */}
+      <StatsStrip userProfile={userProfile} memberCount={memberCount} />
+
+      {/* Your Next Race Card */}
+      {nextRace && (
+        <div className="next-run-card" style={{ background: "linear-gradient(135deg, var(--lrc-orange), #ea580c)", color: "white", marginBottom: 24 }}>
+          <div className="next-run-label" style={{ background: "rgba(255,255,255,0.2)", color: "white" }}>Your Next Official Race</div>
+          <h2 className="next-run-title" style={{ color: "white" }}>{nextRace.name}</h2>
+          <div className="next-run-details" style={{ color: "rgba(255,255,255,0.9)" }}>
+            <span className="next-run-detail">
+              <Calendar size={16} />
+              {nextRace.date?.toDate ? format(nextRace.date.toDate(), "EEEE, MMM d") : "TBD"}
+            </span>
+            <span className="next-run-detail">
+              <MapPin size={16} />
+              {nextRace.location || "TBD"}
+            </span>
+            <span className="next-run-detail">
+              <TrendingUp size={16} />
+              {nextRace.distance}
+            </span>
+          </div>
+          <div className="next-run-bottom">
+            <CountdownTimer targetDate={nextRace.date} />
+            <Link to={`/dashboard/race/${nextRace.id}`} className="btn-log-run" style={{ background: "white", color: "var(--lrc-orange)" }}>
+              View Details
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Next Run Card */}
       {nextRun ? (
         <div className="next-run-card">
@@ -391,9 +426,6 @@ export default function DashboardHome() {
           </div>
         </div>
       )}
-
-      {/* Stats Strip */}
-      <StatsStrip userProfile={userProfile} memberCount={memberCount} />
 
       {/* Activity Feed + Quick Links Grid */}
       <div className="dash-grid">
