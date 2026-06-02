@@ -59,7 +59,6 @@ header {
   cursor: pointer;
   line-height: 1;
   padding: 0 0 6px 0; /* Added bottom padding for optical alignment */
-  display: flex;
   align-items: center;
   justify-content: center;
 }
