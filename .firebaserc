@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "latinrunclub": "latin-run-club-9061a"
+  },
   "targets": {},
   "etags": {}
 }
