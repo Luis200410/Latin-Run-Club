@@ -7,7 +7,7 @@ const cities = [
     {
         id: 'new-york',
         name: 'New York',
-        color: 'rgb(0, 151, 178)', // Teal
+        color: '#FFD500', // Yellow
         bgId: 'bg-teal',
         image: 'https://images.unsplash.com/photo-1499092346589-b9b6be3e94b2?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         subtitle: 'The Concrete Jungle',
