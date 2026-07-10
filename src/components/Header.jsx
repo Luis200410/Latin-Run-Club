@@ -40,7 +40,7 @@ export default function Header() {
         <div className="btn-link">
           <ul className="list">
             <li>
-              <Link to="/about" onClick={() => setIsOpen(false)}>About</Link>
+              <Link to="/about" onClick={() => setIsOpen(false)}>Acerca</Link>
             </li>
             <li>
               <Link to="/community" onClick={() => setIsOpen(false)}>Community</Link>
