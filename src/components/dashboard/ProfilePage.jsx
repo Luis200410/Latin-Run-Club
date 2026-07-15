@@ -708,8 +708,40 @@ export default function ProfilePage() {
       </div>
 
       {/* Strava Integration */}
-      <div className="dash-card" style={{ marginTop: 24 }}>
-        <div className="profile-section" style={{ marginBottom: 0 }}>
+      <div className="dash-card" style={{ marginTop: 24, position: "relative", overflow: "hidden" }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span
+            style={{
+              background: "var(--lrc-text-primary)",
+              color: "var(--lrc-bg)",
+              padding: "6px 16px",
+              borderRadius: "999px",
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: 0.3,
+            }}
+          >
+            Coming Soon
+          </span>
+        </div>
+        <div
+          className="profile-section"
+          style={{
+            marginBottom: 0,
+            filter: "blur(6px)",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
             <h3 style={{ margin: 0, border: "none", padding: 0 }}>Strava Integration</h3>
             {userProfile?.stravaConnected && (
