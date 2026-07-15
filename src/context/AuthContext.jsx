@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -43,6 +43,24 @@ const MOCK_PROFILE = {
   joinedAt: { toDate: () => new Date("2025-06-15") },
 };
 
+// Derive first/last name from a full-name string, falling back to the
+// email's local part when no name is available (e.g. Google accounts that
+// don't share a display name). Guarantees a non-empty firstName so users
+// never get scanned as a nameless "User xxxx".
+function deriveNames(fullName, email) {
+  const cleaned = (fullName || "").trim();
+  if (cleaned) {
+    const parts = cleaned.split(/\s+/);
+    return { firstName: parts[0], lastName: parts.slice(1).join(" ") };
+  }
+  const localPart = (email || "").split("@")[0] || "";
+  const token = localPart.split(/[._-]+/)[0] || "";
+  const firstName = token
+    ? token.charAt(0).toUpperCase() + token.slice(1)
+    : "Runner";
+  return { firstName, lastName: "" };
+}
+
 const AuthContext = createContext();
 
 export function useAuth() {
@@ -58,35 +76,43 @@ export function AuthProvider({ children }) {
   );
   const [loading, setLoading] = useState(DEV_BYPASS_AUTH ? false : true);
 
+  // Set while signup/googleSignIn is creating the profile itself, so the
+  // onAuthStateChanged self-heal below doesn't race and overwrite the real
+  // name/city with a fallback.
+  const creatingProfileRef = useRef(false);
+
   async function signup(email, password, name, city, runningLevel) {
     if (DEV_BYPASS_AUTH) return { user: MOCK_USER };
 
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    );
-    await updateProfile(userCredential.user, { displayName: name });
+    creatingProfileRef.current = true;
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      await updateProfile(userCredential.user, { displayName: name });
 
-    // Create Firestore profile
-    const nameParts = name.split(" ");
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
+      // Create Firestore profile
+      const { firstName, lastName } = deriveNames(name, email);
 
-    await createUserProfile(userCredential.user.uid, {
-      firstName,
-      lastName,
-      email,
-      city: city || "new_york",
-      photoURL: "",
-      runningLevel: runningLevel || 50,
-    });
+      await createUserProfile(userCredential.user.uid, {
+        firstName,
+        lastName,
+        email,
+        city: city || "new_york",
+        photoURL: "",
+        runningLevel: runningLevel || 50,
+      });
 
-    // Fetch the profile we just created
-    const profile = await getUserProfile(userCredential.user.uid);
-    setUserProfile(profile);
+      // Fetch the profile we just created
+      const profile = await getUserProfile(userCredential.user.uid);
+      setUserProfile(profile);
 
-    return userCredential;
+      return userCredential;
+    } finally {
+      creatingProfileRef.current = false;
+    }
   }
 
   function login(email, password) {
@@ -109,24 +135,36 @@ export function AuthProvider({ children }) {
     if (DEV_BYPASS_AUTH) return { user: MOCK_USER };
 
     const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
+    creatingProfileRef.current = true;
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const { firstName, lastName } = deriveNames(
+        result.user.displayName,
+        result.user.email,
+      );
 
-    // Check if Firestore profile exists; if not, create one
-    let profile = await getUserProfile(result.user.uid);
-    if (!profile) {
-      const nameParts = (result.user.displayName || "").split(" ");
-      await createUserProfile(result.user.uid, {
-        firstName: nameParts[0] || "",
-        lastName: nameParts.slice(1).join(" ") || "",
-        email: result.user.email || "",
-        city: city || "new_york",
-        photoURL: result.user.photoURL || "",
-        runningLevel: runningLevel !== undefined ? runningLevel : 50,
-      });
-      profile = await getUserProfile(result.user.uid);
+      // Check if Firestore profile exists; if not, create one. If it exists
+      // but has a blank name (older Google accounts), repair it.
+      let profile = await getUserProfile(result.user.uid);
+      if (!profile) {
+        await createUserProfile(result.user.uid, {
+          firstName,
+          lastName,
+          email: result.user.email || "",
+          city: city || "new_york",
+          photoURL: result.user.photoURL || "",
+          runningLevel: runningLevel !== undefined ? runningLevel : 50,
+        });
+        profile = await getUserProfile(result.user.uid);
+      } else if (!profile.firstName) {
+        await updateProfileInDB(result.user.uid, { firstName, lastName });
+        profile = { ...profile, firstName, lastName };
+      }
+      setUserProfile(profile);
+      return result;
+    } finally {
+      creatingProfileRef.current = false;
     }
-    setUserProfile(profile);
-    return result;
   }
 
   async function updateUserProfile(data) {
@@ -142,6 +180,29 @@ export function AuthProvider({ children }) {
     setUserProfile(updated);
   }
 
+  // Best-effort profile repair. Runs in the background (never awaited by the
+  // auth listener) so a slow/offline Firestore write can't block login. It only
+  // creates a profile when one is genuinely missing, and otherwise patches just
+  // the name — it never touches isAdmin, points, or other existing fields.
+  async function healUserProfile(user) {
+    const profile = await getUserProfile(user.uid);
+    const { firstName, lastName } = deriveNames(user.displayName, user.email);
+    if (!profile) {
+      await createUserProfile(user.uid, {
+        firstName,
+        lastName,
+        email: user.email || "",
+        photoURL: user.photoURL || "",
+      });
+    } else if (!profile.firstName) {
+      await updateProfileInDB(user.uid, { firstName, lastName });
+    } else {
+      return; // nothing to repair
+    }
+    const updated = await getUserProfile(user.uid);
+    setUserProfile(updated);
+  }
+
   useEffect(() => {
     if (DEV_BYPASS_AUTH) {
       console.log(
@@ -152,18 +213,33 @@ export function AuthProvider({ children }) {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
-      if (user) {
-        try {
-          const profile = await getUserProfile(user.uid);
-          setUserProfile(profile);
-        } catch (err) {
-          console.error("Error fetching user profile:", err);
-          setUserProfile(null);
-        }
-      } else {
+      if (!user) {
         setUserProfile(null);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      // Read the profile and render the app immediately. Repair (if any) is
+      // kicked off in the background below so it can NEVER block login or the
+      // loading state — a slow/offline Firestore write used to hang here and
+      // freeze the app on the loading screen.
+      try {
+        const profile = await getUserProfile(user.uid);
+        setUserProfile(profile);
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+        setUserProfile(null);
+      } finally {
+        setLoading(false);
+      }
+
+      // Self-heal a missing/blank-name profile in the background. Skipped while
+      // signup/googleSignIn is already creating it, to avoid a write race.
+      if (!creatingProfileRef.current) {
+        healUserProfile(user).catch((err) =>
+          console.error("Profile self-heal skipped:", err),
+        );
+      }
     });
 
     return unsubscribe;

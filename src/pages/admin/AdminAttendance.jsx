@@ -115,9 +115,17 @@ export default function AdminAttendance() {
     const uid = decodedText.trim();
     try {
       const profile = await getUserProfile(uid);
-      const name = profile
-        ? `${profile.firstName} ${profile.lastName}`
-        : `User ${uid.slice(0, 8)}`;
+      if (!profile) {
+        // No matching runner — likely a non-LRC QR or a broken account.
+        // Don't silently confirm a mystery UID with no name.
+        setLastScanned({ uid, name: "Unknown QR code", success: false });
+        toast.error("QR not recognized — no matching runner profile.");
+        return;
+      }
+
+      const name =
+        `${profile.firstName || ""} ${profile.lastName || ""}`.trim() ||
+        `User ${uid.slice(0, 8)}`;
 
       await confirmRaceAttendance(selectedRace.id, uid);
       setLastScanned({ uid, name, success: true });

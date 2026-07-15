@@ -6,6 +6,59 @@ admin.initializeApp();
 const db = admin.firestore();
 
 /**
+ * deriveNames — mirror of the client helper. Produces a non-empty first name
+ * from a display name, or the email's local part when no name is available.
+ */
+function deriveNames(fullName, email) {
+  const cleaned = (fullName || "").trim();
+  if (cleaned) {
+    const parts = cleaned.split(/\s+/);
+    return { firstName: parts[0], lastName: parts.slice(1).join(" ") };
+  }
+  const localPart = (email || "").split("@")[0] || "";
+  const token = localPart.split(/[._-]+/)[0] || "";
+  const firstName = token
+    ? token.charAt(0).toUpperCase() + token.slice(1)
+    : "Runner";
+  return { firstName, lastName: "" };
+}
+
+/**
+ * createProfileOnSignup — guarantees a Firestore user profile exists for every
+ * new Auth account, even when the client-side write never runs (interrupted
+ * signup, network failure, tab closed). Runs server-side the moment an account
+ * is created. If the client already created the profile, this is a no-op; if it
+ * runs first, the client's later write (with the chosen city/level) merges on
+ * top.
+ */
+exports.createProfileOnSignup = functions.auth.user().onCreate(async (user) => {
+  const ref = db.collection("users").doc(user.uid);
+  const existing = await ref.get();
+  if (existing.exists) return;
+
+  const { firstName, lastName } = deriveNames(user.displayName, user.email);
+
+  await ref.set(
+    {
+      firstName,
+      lastName,
+      email: user.email || "",
+      photoURL: user.photoURL || "",
+      city: "new_york",
+      runningLevel: 50,
+      joinedAt: admin.firestore.FieldValue.serverTimestamp(),
+      stravaConnected: false,
+      stravaAthleteId: null,
+      runsAttended: 0,
+      totalDistanceKm: 0,
+      totalPoints: 0,
+      isAdmin: false,
+    },
+    { merge: true },
+  );
+});
+
+/**
  * stravaAuth — exchanges Strava OAuth code for tokens and stores them.
  * Called from the frontend StravaCallback page after Strava redirects back.
  *
