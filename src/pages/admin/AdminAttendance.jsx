@@ -113,6 +113,7 @@ export default function AdminAttendance() {
     stopScanner();
     setScanning(false);
     const uid = decodedText.trim();
+    let name = `User ${uid.slice(0, 8)}`;
     try {
       const profile = await getUserProfile(uid);
       if (!profile) {
@@ -123,17 +124,19 @@ export default function AdminAttendance() {
         return;
       }
 
-      const name =
-        `${profile.firstName || ""} ${profile.lastName || ""}`.trim() ||
-        `User ${uid.slice(0, 8)}`;
+      name = `${profile.firstName || ""} ${profile.lastName || ""}`.trim() || name;
 
       await confirmRaceAttendance(selectedRace.id, uid);
       setLastScanned({ uid, name, success: true });
       toast.success(`✓ ${name} confirmed!`);
     } catch (err) {
       console.error("Scan confirm error:", err);
-      setLastScanned({ uid, name: uid.slice(0, 12), success: false });
-      toast.error("Could not confirm attendance.");
+      setLastScanned({ uid, name, success: false });
+      if (err.message === "already_scanned") {
+        toast.error(`${name} has already been scanned!`);
+      } else {
+        toast.error("Could not confirm attendance.");
+      }
     }
   }
 
@@ -317,7 +320,11 @@ export default function AdminAttendance() {
                                 await confirmRaceAttendance(selectedRace.id, a.id);
                                 toast.success(`✓ ${a.firstName} marked present`);
                               } catch (e) {
-                                toast.error("Could not mark present");
+                                if (e.message === "already_scanned") {
+                                  toast.error(`${a.firstName} has already been scanned!`);
+                                } else {
+                                  toast.error("Could not mark present");
+                                }
                               }
                             }}
                           >

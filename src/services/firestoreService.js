@@ -236,18 +236,32 @@ export async function toggleRaceParticipation(raceId, uid, homeCity) {
 export async function confirmRaceAttendance(raceId, uid) {
   const raceRef = doc(db, "races", raceId);
   const raceSnap = await getDoc(raceRef);
-  if (!raceSnap.exists()) return;
+  if (!raceSnap.exists()) throw new Error("Race not found");
 
   const raceData = raceSnap.data();
-  if ((raceData.confirmedAttendees || []).includes(uid)) return;
+  if ((raceData.confirmedAttendees || []).includes(uid)) {
+    throw new Error("already_scanned");
+  }
 
   const pointValue = raceData.pointValue || 0;
+  
+  let addedDistance = 0;
+  const distStr = raceData.distance || "";
+  if (distStr === "5K") addedDistance = 5;
+  else if (distStr === "10K") addedDistance = 10;
+  else if (distStr === "Half Marathon") addedDistance = 21.1;
+  else if (distStr === "Marathon") addedDistance = 42.2;
+  else if (distStr === "Ultra") addedDistance = 50;
+
   await updateDoc(raceRef, { confirmedAttendees: arrayUnion(uid) });
-  if (pointValue > 0) {
-    await updateDoc(doc(db, "users", uid), {
-      totalPoints: increment(pointValue),
-    });
-  }
+  
+  const userUpdates = {
+    runsAttended: increment(1)
+  };
+  if (pointValue > 0) userUpdates.totalPoints = increment(pointValue);
+  if (addedDistance > 0) userUpdates.totalDistanceKm = increment(addedDistance);
+
+  await updateDoc(doc(db, "users", uid), userUpdates);
 }
 
 export async function updateRacePointValue(raceId, pointValue) {
