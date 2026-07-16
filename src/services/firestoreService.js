@@ -238,6 +238,10 @@ export async function confirmRaceAttendance(raceId, uid) {
   const raceSnap = await getDoc(raceRef);
   if (!raceSnap.exists()) throw new Error("Race not found");
 
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+  if (!userSnap.exists()) throw new Error("User profile not found");
+
   const raceData = raceSnap.data();
   if ((raceData.confirmedAttendees || []).includes(uid)) {
     throw new Error("already_scanned");
@@ -261,7 +265,7 @@ export async function confirmRaceAttendance(raceId, uid) {
   if (pointValue > 0) userUpdates.totalPoints = increment(pointValue);
   if (addedDistance > 0) userUpdates.totalDistanceKm = increment(addedDistance);
 
-  await updateDoc(doc(db, "users", uid), userUpdates);
+  await updateDoc(userRef, userUpdates);
 }
 
 export async function updateRacePointValue(raceId, pointValue) {
