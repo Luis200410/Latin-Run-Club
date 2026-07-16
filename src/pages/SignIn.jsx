@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../style/refined-auth.css";
 import { useAuth } from "../context/AuthContext";
@@ -10,8 +10,14 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login, googleSignIn } = useAuth();
+  const { login, googleSignIn, currentUser } = useAuth();
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard");
+    }
+  }, [currentUser, navigate]);
 
   const handleGoogleSignIn = async () => {
     try {

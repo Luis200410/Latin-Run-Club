@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../style/refined-auth.css";
 import "../style/refined-auth.css";
@@ -33,8 +33,14 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { signup, googleSignIn } = useAuth();
+  const { signup, googleSignIn, currentUser } = useAuth();
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard");
+    }
+  }, [currentUser, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
